@@ -1,0 +1,299 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06D7FC8B163506D7000E6576 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8A163506D7000E6576 /* UIKit.framework */; };
+		06D7FC8D163506D7000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
+		06D7FC8F163506D7000E6576 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8E163506D7000E6576 /* CoreGraphics.framework */; };
+		06D7FC95163506D8000E6576 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FC93163506D8000E6576 /* InfoPlist.strings */; };
+		06D7FC97163506D8000E6576 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D7FC96163506D8000E6576 /* main.m */; };
+		06D7FC9B163506D8000E6576 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D7FC9A163506D8000E6576 /* AppDelegate.m */; };
+		06D7FC9D163506D8000E6576 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FC9C163506D8000E6576 /* Default.png */; };
+		06D7FC9F163506D8000E6576 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FC9E163506D8000E6576 /* Default@2x.png */; };
+		06D7FCA1163506D8000E6576 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FCA0163506D8000E6576 /* Default-568h@2x.png */; };
+		06D7FCA4163506D8000E6576 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D7FCA3163506D8000E6576 /* ViewController.m */; };
+		06D7FCA7163506D8000E6576 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FCA5163506D8000E6576 /* ViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		06D7FC86163506D7000E6576 /* CocoJS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoJS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D7FC8A163506D7000E6576 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		06D7FC8C163506D7000E6576 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		06D7FC8E163506D7000E6576 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		06D7FC92163506D8000E6576 /* CocoJS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CocoJS-Info.plist"; sourceTree = "<group>"; };
+		06D7FC94163506D8000E6576 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		06D7FC96163506D8000E6576 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		06D7FC98163506D8000E6576 /* CocoJS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CocoJS-Prefix.pch"; sourceTree = "<group>"; };
+		06D7FC99163506D8000E6576 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		06D7FC9A163506D8000E6576 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		06D7FC9C163506D8000E6576 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		06D7FC9E163506D8000E6576 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		06D7FCA0163506D8000E6576 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		06D7FCA2163506D8000E6576 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		06D7FCA3163506D8000E6576 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		06D7FCA6163506D8000E6576 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		06D7FC83163506D7000E6576 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D7FC8B163506D7000E6576 /* UIKit.framework in Frameworks */,
+				06D7FC8D163506D7000E6576 /* Foundation.framework in Frameworks */,
+				06D7FC8F163506D7000E6576 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		06D7FC7B163506D7000E6576 = {
+			isa = PBXGroup;
+			children = (
+				06D7FC90163506D7000E6576 /* CocoJS */,
+				06D7FC89163506D7000E6576 /* Frameworks */,
+				06D7FC87163506D7000E6576 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		06D7FC87163506D7000E6576 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FC86163506D7000E6576 /* CocoJS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		06D7FC89163506D7000E6576 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FC8A163506D7000E6576 /* UIKit.framework */,
+				06D7FC8C163506D7000E6576 /* Foundation.framework */,
+				06D7FC8E163506D7000E6576 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		06D7FC90163506D7000E6576 /* CocoJS */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FC99163506D8000E6576 /* AppDelegate.h */,
+				06D7FC9A163506D8000E6576 /* AppDelegate.m */,
+				06D7FCA2163506D8000E6576 /* ViewController.h */,
+				06D7FCA3163506D8000E6576 /* ViewController.m */,
+				06D7FCA5163506D8000E6576 /* ViewController.xib */,
+				06D7FC91163506D8000E6576 /* Supporting Files */,
+			);
+			path = CocoJS;
+			sourceTree = "<group>";
+		};
+		06D7FC91163506D8000E6576 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FC92163506D8000E6576 /* CocoJS-Info.plist */,
+				06D7FC93163506D8000E6576 /* InfoPlist.strings */,
+				06D7FC96163506D8000E6576 /* main.m */,
+				06D7FC98163506D8000E6576 /* CocoJS-Prefix.pch */,
+				06D7FC9C163506D8000E6576 /* Default.png */,
+				06D7FC9E163506D8000E6576 /* Default@2x.png */,
+				06D7FCA0163506D8000E6576 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		06D7FC85163506D7000E6576 /* CocoJS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */;
+			buildPhases = (
+				06D7FC82163506D7000E6576 /* Sources */,
+				06D7FC83163506D7000E6576 /* Frameworks */,
+				06D7FC84163506D7000E6576 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CocoJS;
+			productName = CocoJS;
+			productReference = 06D7FC86163506D7000E6576 /* CocoJS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		06D7FC7D163506D7000E6576 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Xiliang Chen";
+			};
+			buildConfigurationList = 06D7FC80163506D7000E6576 /* Build configuration list for PBXProject "CocoJS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 06D7FC7B163506D7000E6576;
+			productRefGroup = 06D7FC87163506D7000E6576 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				06D7FC85163506D7000E6576 /* CocoJS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		06D7FC84163506D7000E6576 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D7FC95163506D8000E6576 /* InfoPlist.strings in Resources */,
+				06D7FC9D163506D8000E6576 /* Default.png in Resources */,
+				06D7FC9F163506D8000E6576 /* Default@2x.png in Resources */,
+				06D7FCA1163506D8000E6576 /* Default-568h@2x.png in Resources */,
+				06D7FCA7163506D8000E6576 /* ViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		06D7FC82163506D7000E6576 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D7FC97163506D8000E6576 /* main.m in Sources */,
+				06D7FC9B163506D8000E6576 /* AppDelegate.m in Sources */,
+				06D7FCA4163506D8000E6576 /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		06D7FC93163506D8000E6576 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				06D7FC94163506D8000E6576 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		06D7FCA5163506D8000E6576 /* ViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				06D7FCA6163506D8000E6576 /* en */,
+			);
+			name = ViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		06D7FCA8163506D8000E6576 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		06D7FCA9163506D8000E6576 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		06D7FCAB163506D8000E6576 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
+				INFOPLIST_FILE = "CocoJS/CocoJS-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		06D7FCAC163506D8000E6576 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
+				INFOPLIST_FILE = "CocoJS/CocoJS-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		06D7FC80163506D7000E6576 /* Build configuration list for PBXProject "CocoJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06D7FCA8163506D8000E6576 /* Debug */,
+				06D7FCA9163506D8000E6576 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06D7FCAB163506D8000E6576 /* Debug */,
+				06D7FCAC163506D8000E6576 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 06D7FC7D163506D7000E6576 /* Project object */;
+}
