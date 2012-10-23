@@ -1,0 +1,92 @@
+//
+//  JSCore.m
+//  CocoJS
+//
+//  Created by Xiliang Chen on 12-10-22.
+//  Copyright (c) 2012年 Xiliang Chen. All rights reserved.
+//
+
+#include <vector>
+using namespace std;
+
+#import "JSCore.h"
+
+#import "jsapi.h"
+
+@interface JSCore ()
+
+@property (nonatomic) NSString *errorString;
+
+@end
+
+static JSClass global_class = { "Global", JSCLASS_GLOBAL_FLAGS, JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, NULL, JSCLASS_NO_OPTIONAL_MEMBERS };
+
+/* The error reporter callback. */
+void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
+    [JSCore sharedInstance].errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
+    MDLOG(@"%@", [JSCore sharedInstance].errorString);
+    
+}
+
+@implementation JSCore
+
++ (JSCore *)sharedInstance {
+    static JSCore *sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        
+        /* Create a JS runtime. */
+        _rt = JS_NewRuntime(8L * 1024L * 1024L);
+        /* Create a context. */
+        _cx = JS_NewContext(_rt, 8192);
+        JS_SetOptions(_cx, JSOPTION_VAROBJFIX);
+        JS_SetVersion(_cx, JSVERSION_LATEST);
+        JS_SetErrorReporter(_cx, reportError);
+        /* Create the global object in a new compartment. */
+        _global = JS_NewCompartmentAndGlobalObject(_cx, &global_class, NULL);
+        /* Populate the global object with the standard globals, like Object and Array. */
+        JS_InitStandardClasses(_cx, _global);
+        
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    JS_DestroyContext(_cx);
+    JS_DestroyRuntime(_rt);
+    
+    [super dealloc];
+}
+
+#pragma mark -
+
+- (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal
+{
+	const char *cstr = [string UTF8String];
+	BOOL ok = JS_EvaluateScript( _cx, _global, cstr, (unsigned)strlen(cstr), "noname", 0, outVal);
+	return ok;
+}
+
+- (BOOL)evaluateFile:(NSString *)filepath {
+    
+    NSError *error = nil;
+	NSString *script = [NSString stringWithContentsOfFile:filepath encoding:NSUTF8StringEncoding error:&error];
+    if (!script) {
+        MWLOG(@"fail to read file at path: %@, with error: %@", filepath, error);
+        return NO;
+    }
+	
+    return [self evaluateString:script outVal:nil];
+}
+
+@end

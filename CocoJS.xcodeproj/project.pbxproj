@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06498F1716356B28003F0C16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8A163506D7000E6576 /* UIKit.framework */; };
+		06498F1816356B2D003F0C16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8E163506D7000E6576 /* CoreGraphics.framework */; };
+		06498F1A16356B38003F0C16 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06498F1916356B38003F0C16 /* CoreText.framework */; };
+		06498F1B16356B3F003F0C16 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06498F1916356B38003F0C16 /* CoreText.framework */; };
 		06D7FC8B163506D7000E6576 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8A163506D7000E6576 /* UIKit.framework */; };
 		06D7FC8D163506D7000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D7FC8F163506D7000E6576 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8E163506D7000E6576 /* CoreGraphics.framework */; };
@@ -16,12 +20,46 @@
 		06D7FC9D163506D8000E6576 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FC9C163506D8000E6576 /* Default.png */; };
 		06D7FC9F163506D8000E6576 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FC9E163506D8000E6576 /* Default@2x.png */; };
 		06D7FCA1163506D8000E6576 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FCA0163506D8000E6576 /* Default-568h@2x.png */; };
-		06D7FCA4163506D8000E6576 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D7FCA3163506D8000E6576 /* ViewController.m */; };
+		06D7FCA4163506D8000E6576 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06D7FCA3163506D8000E6576 /* ViewController.mm */; };
 		06D7FCA7163506D8000E6576 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06D7FCA5163506D8000E6576 /* ViewController.xib */; };
+		06D7FCB216350713000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
+		06D7FCC416353714000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
+		06D7FCC91635375B000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
+		06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E06D1635426C006F2B9B /* JSCore.mm */; };
+		06E2E0711635427F006F2B9B /* libCocoJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCB116350713000E6576 /* libCocoJS.a */; };
+		06E2E0EB16354685006F2B9B /* MLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0E916354685006F2B9B /* MLogger.c */; };
+		06E2E0F4163552FE006F2B9B /* HighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0EC163552FE006F2B9B /* HighlightingTextView.m */; };
+		06E2E0F5163552FE006F2B9B /* AttributedTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0EE163552FE006F2B9B /* AttributedTextView.m */; };
+		06E2E0F6163552FE006F2B9B /* JavascriptSyntaxHighlighter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0F1163552FE006F2B9B /* JavascriptSyntaxHighlighter.m */; };
+		06E2E0F7163552FE006F2B9B /* JSConsole.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0F3163552FE006F2B9B /* JSConsole.mm */; };
+		06E2E0FF16355725006F2B9B /* jsval_helper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0FD16355725006F2B9B /* jsval_helper.mm */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		06E2E06F16354278006F2B9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 06D7FC7D163506D7000E6576 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 06D7FCB016350713000E6576;
+			remoteInfo = CocoJS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		06D7FCAF16350713000E6576 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		06D7FC86163506D7000E6576 /* CocoJS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoJS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06498F1916356B38003F0C16 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		06D7FC86163506D7000E6576 /* app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D7FC8A163506D7000E6576 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		06D7FC8C163506D7000E6576 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		06D7FC8E163506D7000E6576 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -35,8 +73,76 @@
 		06D7FC9E163506D8000E6576 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		06D7FCA0163506D8000E6576 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		06D7FCA2163506D8000E6576 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		06D7FCA3163506D8000E6576 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		06D7FCA3163506D8000E6576 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		06D7FCA6163506D8000E6576 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+		06D7FCB116350713000E6576 /* libCocoJS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCocoJS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D7FCC31635370C000E6576 /* libjs_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjs_static.a; path = CocoJS/libs/libjs_static.a; sourceTree = "<group>"; };
+		06D7FCCC163537ED000E6576 /* BitArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitArray.h; sourceTree = "<group>"; };
+		06D7FCCE163537ED000E6576 /* Barrier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Barrier.h; sourceTree = "<group>"; };
+		06D7FCCF163537ED000E6576 /* Statistics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Statistics.h; sourceTree = "<group>"; };
+		06D7FCD1163537ED000E6576 /* HashTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashTable.h; sourceTree = "<group>"; };
+		06D7FCD2163537ED000E6576 /* LegacyIntTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LegacyIntTypes.h; sourceTree = "<group>"; };
+		06D7FCD3163537ED000E6576 /* MemoryMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MemoryMetrics.h; sourceTree = "<group>"; };
+		06D7FCD4163537ED000E6576 /* TemplateLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TemplateLib.h; sourceTree = "<group>"; };
+		06D7FCD5163537ED000E6576 /* Utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		06D7FCD6163537ED000E6576 /* Vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
+		06D7FCD7163537ED000E6576 /* js-config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "js-config.h"; sourceTree = "<group>"; };
+		06D7FCD8163537ED000E6576 /* js.msg */ = {isa = PBXFileReference; lastKnownFileType = text; path = js.msg; sourceTree = "<group>"; };
+		06D7FCD9163537ED000E6576 /* jsalloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsalloc.h; sourceTree = "<group>"; };
+		06D7FCDA163537ED000E6576 /* jsapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsapi.h; sourceTree = "<group>"; };
+		06D7FCDB163537ED000E6576 /* jsatom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsatom.h; sourceTree = "<group>"; };
+		06D7FCDC163537ED000E6576 /* jscell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jscell.h; sourceTree = "<group>"; };
+		06D7FCDD163537ED000E6576 /* jsclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsclass.h; sourceTree = "<group>"; };
+		06D7FCDE163537ED000E6576 /* jsclist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsclist.h; sourceTree = "<group>"; };
+		06D7FCDF163537ED000E6576 /* jscpucfg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jscpucfg.h; sourceTree = "<group>"; };
+		06D7FCE0163537ED000E6576 /* jsdbgapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsdbgapi.h; sourceTree = "<group>"; };
+		06D7FCE1163537ED000E6576 /* jsdhash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsdhash.h; sourceTree = "<group>"; };
+		06D7FCE2163537ED000E6576 /* jsfriendapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsfriendapi.h; sourceTree = "<group>"; };
+		06D7FCE3163537ED000E6576 /* jsgc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsgc.h; sourceTree = "<group>"; };
+		06D7FCE4163537ED000E6576 /* jshash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jshash.h; sourceTree = "<group>"; };
+		06D7FCE5163537ED000E6576 /* jslock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jslock.h; sourceTree = "<group>"; };
+		06D7FCE6163537ED000E6576 /* json.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = json.h; sourceTree = "<group>"; };
+		06D7FCE7163537ED000E6576 /* jsperf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsperf.h; sourceTree = "<group>"; };
+		06D7FCE8163537ED000E6576 /* jsprf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsprf.h; sourceTree = "<group>"; };
+		06D7FCE9163537ED000E6576 /* jsproto.tbl */ = {isa = PBXFileReference; lastKnownFileType = text; path = jsproto.tbl; sourceTree = "<group>"; };
+		06D7FCEA163537ED000E6576 /* jsproxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsproxy.h; sourceTree = "<group>"; };
+		06D7FCEB163537ED000E6576 /* jsprvtd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsprvtd.h; sourceTree = "<group>"; };
+		06D7FCEC163537ED000E6576 /* jspubtd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jspubtd.h; sourceTree = "<group>"; };
+		06D7FCED163537ED000E6576 /* jstypedarray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jstypedarray.h; sourceTree = "<group>"; };
+		06D7FCEE163537ED000E6576 /* jstypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jstypes.h; sourceTree = "<group>"; };
+		06D7FCEF163537ED000E6576 /* jsutil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsutil.h; sourceTree = "<group>"; };
+		06D7FCF0163537ED000E6576 /* jsval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsval.h; sourceTree = "<group>"; };
+		06D7FCF1163537ED000E6576 /* jsversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsversion.h; sourceTree = "<group>"; };
+		06D7FCF2163537ED000E6576 /* jswrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jswrapper.h; sourceTree = "<group>"; };
+		06D7FCF3163537ED000E6576 /* jsxdrapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsxdrapi.h; sourceTree = "<group>"; };
+		06D7FCF5163537ED000E6576 /* Assertions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Assertions.h; sourceTree = "<group>"; };
+		06D7FCF6163537ED000E6576 /* Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Attributes.h; sourceTree = "<group>"; };
+		06D7FCF7163537ED000E6576 /* BloomFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BloomFilter.h; sourceTree = "<group>"; };
+		06D7FCF8163537ED000E6576 /* GuardObjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuardObjects.h; sourceTree = "<group>"; };
+		06D7FCF9163537ED000E6576 /* HashFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashFunctions.h; sourceTree = "<group>"; };
+		06D7FCFA163537ED000E6576 /* Likely.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Likely.h; sourceTree = "<group>"; };
+		06D7FCFB163537ED000E6576 /* LinkedList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LinkedList.h; sourceTree = "<group>"; };
+		06D7FCFC163537ED000E6576 /* MSStdInt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSStdInt.h; sourceTree = "<group>"; };
+		06D7FCFD163537ED000E6576 /* RangedPtr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RangedPtr.h; sourceTree = "<group>"; };
+		06D7FCFE163537ED000E6576 /* RefPtr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefPtr.h; sourceTree = "<group>"; };
+		06D7FCFF163537ED000E6576 /* StandardInteger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StandardInteger.h; sourceTree = "<group>"; };
+		06D7FD00163537ED000E6576 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		06D7FD01163537ED000E6576 /* Util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		06E2E06C1635426C006F2B9B /* JSCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCore.h; sourceTree = "<group>"; };
+		06E2E06D1635426C006F2B9B /* JSCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JSCore.mm; sourceTree = "<group>"; };
+		06E2E0E916354685006F2B9B /* MLogger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MLogger.c; sourceTree = "<group>"; };
+		06E2E0EA16354685006F2B9B /* MLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLogger.h; sourceTree = "<group>"; };
+		06E2E0EC163552FE006F2B9B /* HighlightingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighlightingTextView.m; sourceTree = "<group>"; };
+		06E2E0ED163552FE006F2B9B /* AttributedTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTextView.h; sourceTree = "<group>"; };
+		06E2E0EE163552FE006F2B9B /* AttributedTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributedTextView.m; sourceTree = "<group>"; };
+		06E2E0EF163552FE006F2B9B /* HighlightingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighlightingTextView.h; sourceTree = "<group>"; };
+		06E2E0F0163552FE006F2B9B /* JavascriptSyntaxHighlighter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavascriptSyntaxHighlighter.h; sourceTree = "<group>"; };
+		06E2E0F1163552FE006F2B9B /* JavascriptSyntaxHighlighter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavascriptSyntaxHighlighter.m; sourceTree = "<group>"; };
+		06E2E0F2163552FE006F2B9B /* SyntaxHighlighter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyntaxHighlighter.h; sourceTree = "<group>"; };
+		06E2E0F3163552FE006F2B9B /* JSConsole.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JSConsole.mm; sourceTree = "<group>"; };
+		06E2E0F816355311006F2B9B /* JSConsole.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSConsole.h; sourceTree = "<group>"; };
+		06E2E0FD16355725006F2B9B /* jsval_helper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsval_helper.mm; sourceTree = "<group>"; };
+		06E2E0FE16355725006F2B9B /* jsval_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsval_helper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,9 +150,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06E2E0711635427F006F2B9B /* libCocoJS.a in Frameworks */,
+				06498F1B16356B3F003F0C16 /* CoreText.framework in Frameworks */,
+				06D7FCC91635375B000E6576 /* libjs_static.a in Frameworks */,
 				06D7FC8B163506D7000E6576 /* UIKit.framework in Frameworks */,
 				06D7FC8D163506D7000E6576 /* Foundation.framework in Frameworks */,
 				06D7FC8F163506D7000E6576 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06D7FCAE16350713000E6576 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D7FCB216350713000E6576 /* Foundation.framework in Frameworks */,
+				06D7FCC416353714000E6576 /* libjs_static.a in Frameworks */,
+				06498F1816356B2D003F0C16 /* CoreGraphics.framework in Frameworks */,
+				06498F1A16356B38003F0C16 /* CoreText.framework in Frameworks */,
+				06498F1716356B28003F0C16 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +186,8 @@
 		06D7FC87163506D7000E6576 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				06D7FC86163506D7000E6576 /* CocoJS.app */,
+				06D7FC86163506D7000E6576 /* app.app */,
+				06D7FCB116350713000E6576 /* libCocoJS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,6 +195,8 @@
 		06D7FC89163506D7000E6576 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06498F1916356B38003F0C16 /* CoreText.framework */,
+				06D7FCC31635370C000E6576 /* libjs_static.a */,
 				06D7FC8A163506D7000E6576 /* UIKit.framework */,
 				06D7FC8C163506D7000E6576 /* Foundation.framework */,
 				06D7FC8E163506D7000E6576 /* CoreGraphics.framework */,
@@ -83,10 +207,12 @@
 		06D7FC90163506D7000E6576 /* CocoJS */ = {
 			isa = PBXGroup;
 			children = (
+				06D7FCCA163537ED000E6576 /* spidermonkey */,
+				06D7FCC816353732000E6576 /* lib */,
 				06D7FC99163506D8000E6576 /* AppDelegate.h */,
 				06D7FC9A163506D8000E6576 /* AppDelegate.m */,
 				06D7FCA2163506D8000E6576 /* ViewController.h */,
-				06D7FCA3163506D8000E6576 /* ViewController.m */,
+				06D7FCA3163506D8000E6576 /* ViewController.mm */,
 				06D7FCA5163506D8000E6576 /* ViewController.xib */,
 				06D7FC91163506D8000E6576 /* Supporting Files */,
 			);
@@ -107,12 +233,149 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		06D7FCC816353732000E6576 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				06E2E0FC163556FF006F2B9B /* JSCore */,
+				06E2E0F916355323006F2B9B /* Console */,
+				06E2E0EA16354685006F2B9B /* MLogger.h */,
+				06E2E0E916354685006F2B9B /* MLogger.c */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		06D7FCCA163537ED000E6576 /* spidermonkey */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FCCB163537ED000E6576 /* ds */,
+				06D7FCCD163537ED000E6576 /* gc */,
+				06D7FCD0163537ED000E6576 /* js */,
+				06D7FCD7163537ED000E6576 /* js-config.h */,
+				06D7FCD8163537ED000E6576 /* js.msg */,
+				06D7FCD9163537ED000E6576 /* jsalloc.h */,
+				06D7FCDA163537ED000E6576 /* jsapi.h */,
+				06D7FCDB163537ED000E6576 /* jsatom.h */,
+				06D7FCDC163537ED000E6576 /* jscell.h */,
+				06D7FCDD163537ED000E6576 /* jsclass.h */,
+				06D7FCDE163537ED000E6576 /* jsclist.h */,
+				06D7FCDF163537ED000E6576 /* jscpucfg.h */,
+				06D7FCE0163537ED000E6576 /* jsdbgapi.h */,
+				06D7FCE1163537ED000E6576 /* jsdhash.h */,
+				06D7FCE2163537ED000E6576 /* jsfriendapi.h */,
+				06D7FCE3163537ED000E6576 /* jsgc.h */,
+				06D7FCE4163537ED000E6576 /* jshash.h */,
+				06D7FCE5163537ED000E6576 /* jslock.h */,
+				06D7FCE6163537ED000E6576 /* json.h */,
+				06D7FCE7163537ED000E6576 /* jsperf.h */,
+				06D7FCE8163537ED000E6576 /* jsprf.h */,
+				06D7FCE9163537ED000E6576 /* jsproto.tbl */,
+				06D7FCEA163537ED000E6576 /* jsproxy.h */,
+				06D7FCEB163537ED000E6576 /* jsprvtd.h */,
+				06D7FCEC163537ED000E6576 /* jspubtd.h */,
+				06D7FCED163537ED000E6576 /* jstypedarray.h */,
+				06D7FCEE163537ED000E6576 /* jstypes.h */,
+				06D7FCEF163537ED000E6576 /* jsutil.h */,
+				06D7FCF0163537ED000E6576 /* jsval.h */,
+				06D7FCF1163537ED000E6576 /* jsversion.h */,
+				06D7FCF2163537ED000E6576 /* jswrapper.h */,
+				06D7FCF3163537ED000E6576 /* jsxdrapi.h */,
+				06D7FCF4163537ED000E6576 /* mozilla */,
+			);
+			name = spidermonkey;
+			path = libs/spidermonkey;
+			sourceTree = "<group>";
+		};
+		06D7FCCB163537ED000E6576 /* ds */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FCCC163537ED000E6576 /* BitArray.h */,
+			);
+			path = ds;
+			sourceTree = "<group>";
+		};
+		06D7FCCD163537ED000E6576 /* gc */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FCCE163537ED000E6576 /* Barrier.h */,
+				06D7FCCF163537ED000E6576 /* Statistics.h */,
+			);
+			path = gc;
+			sourceTree = "<group>";
+		};
+		06D7FCD0163537ED000E6576 /* js */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FCD1163537ED000E6576 /* HashTable.h */,
+				06D7FCD2163537ED000E6576 /* LegacyIntTypes.h */,
+				06D7FCD3163537ED000E6576 /* MemoryMetrics.h */,
+				06D7FCD4163537ED000E6576 /* TemplateLib.h */,
+				06D7FCD5163537ED000E6576 /* Utility.h */,
+				06D7FCD6163537ED000E6576 /* Vector.h */,
+			);
+			path = js;
+			sourceTree = "<group>";
+		};
+		06D7FCF4163537ED000E6576 /* mozilla */ = {
+			isa = PBXGroup;
+			children = (
+				06D7FCF5163537ED000E6576 /* Assertions.h */,
+				06D7FCF6163537ED000E6576 /* Attributes.h */,
+				06D7FCF7163537ED000E6576 /* BloomFilter.h */,
+				06D7FCF8163537ED000E6576 /* GuardObjects.h */,
+				06D7FCF9163537ED000E6576 /* HashFunctions.h */,
+				06D7FCFA163537ED000E6576 /* Likely.h */,
+				06D7FCFB163537ED000E6576 /* LinkedList.h */,
+				06D7FCFC163537ED000E6576 /* MSStdInt.h */,
+				06D7FCFD163537ED000E6576 /* RangedPtr.h */,
+				06D7FCFE163537ED000E6576 /* RefPtr.h */,
+				06D7FCFF163537ED000E6576 /* StandardInteger.h */,
+				06D7FD00163537ED000E6576 /* Types.h */,
+				06D7FD01163537ED000E6576 /* Util.h */,
+			);
+			path = mozilla;
+			sourceTree = "<group>";
+		};
+		06E2E0F916355323006F2B9B /* Console */ = {
+			isa = PBXGroup;
+			children = (
+				06E2E0F816355311006F2B9B /* JSConsole.h */,
+				06E2E0F3163552FE006F2B9B /* JSConsole.mm */,
+				06E2E0FA1635532A006F2B9B /* SyntaxHighlighter */,
+			);
+			name = Console;
+			sourceTree = "<group>";
+		};
+		06E2E0FA1635532A006F2B9B /* SyntaxHighlighter */ = {
+			isa = PBXGroup;
+			children = (
+				06E2E0F2163552FE006F2B9B /* SyntaxHighlighter.h */,
+				06E2E0EF163552FE006F2B9B /* HighlightingTextView.h */,
+				06E2E0EC163552FE006F2B9B /* HighlightingTextView.m */,
+				06E2E0ED163552FE006F2B9B /* AttributedTextView.h */,
+				06E2E0EE163552FE006F2B9B /* AttributedTextView.m */,
+				06E2E0F0163552FE006F2B9B /* JavascriptSyntaxHighlighter.h */,
+				06E2E0F1163552FE006F2B9B /* JavascriptSyntaxHighlighter.m */,
+			);
+			name = SyntaxHighlighter;
+			sourceTree = "<group>";
+		};
+		06E2E0FC163556FF006F2B9B /* JSCore */ = {
+			isa = PBXGroup;
+			children = (
+				06E2E06C1635426C006F2B9B /* JSCore.h */,
+				06E2E06D1635426C006F2B9B /* JSCore.mm */,
+				06E2E0FE16355725006F2B9B /* jsval_helper.h */,
+				06E2E0FD16355725006F2B9B /* jsval_helper.mm */,
+			);
+			name = JSCore;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		06D7FC85163506D7000E6576 /* CocoJS */ = {
+		06D7FC85163506D7000E6576 /* app */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */;
+			buildConfigurationList = 06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "app" */;
 			buildPhases = (
 				06D7FC82163506D7000E6576 /* Sources */,
 				06D7FC83163506D7000E6576 /* Frameworks */,
@@ -121,11 +384,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				06E2E07016354278006F2B9B /* PBXTargetDependency */,
+			);
+			name = app;
+			productName = CocoJS;
+			productReference = 06D7FC86163506D7000E6576 /* app.app */;
+			productType = "com.apple.product-type.application";
+		};
+		06D7FCB016350713000E6576 /* CocoJS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06D7FCBA16350713000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */;
+			buildPhases = (
+				06D7FCAD16350713000E6576 /* Sources */,
+				06D7FCAE16350713000E6576 /* Frameworks */,
+				06D7FCAF16350713000E6576 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
 			);
 			name = CocoJS;
 			productName = CocoJS;
-			productReference = 06D7FC86163506D7000E6576 /* CocoJS.app */;
-			productType = "com.apple.product-type.application";
+			productReference = 06D7FCB116350713000E6576 /* libCocoJS.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -148,7 +429,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				06D7FC85163506D7000E6576 /* CocoJS */,
+				06D7FC85163506D7000E6576 /* app */,
+				06D7FCB016350713000E6576 /* CocoJS */,
 			);
 		};
 /* End PBXProject section */
@@ -175,11 +457,33 @@
 			files = (
 				06D7FC97163506D8000E6576 /* main.m in Sources */,
 				06D7FC9B163506D8000E6576 /* AppDelegate.m in Sources */,
-				06D7FCA4163506D8000E6576 /* ViewController.m in Sources */,
+				06D7FCA4163506D8000E6576 /* ViewController.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06D7FCAD16350713000E6576 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */,
+				06E2E0EB16354685006F2B9B /* MLogger.c in Sources */,
+				06E2E0F4163552FE006F2B9B /* HighlightingTextView.m in Sources */,
+				06E2E0F5163552FE006F2B9B /* AttributedTextView.m in Sources */,
+				06E2E0F6163552FE006F2B9B /* JavascriptSyntaxHighlighter.m in Sources */,
+				06E2E0F7163552FE006F2B9B /* JSConsole.mm in Sources */,
+				06E2E0FF16355725006F2B9B /* jsval_helper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		06E2E07016354278006F2B9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 06D7FCB016350713000E6576 /* CocoJS */;
+			targetProxy = 06E2E06F16354278006F2B9B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		06D7FC93163506D8000E6576 /* InfoPlist.strings */ = {
@@ -209,7 +513,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -222,6 +526,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/CocoJS/libs/spidermonkey";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -237,12 +542,13 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/CocoJS/libs/spidermonkey";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
@@ -257,6 +563,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
 				INFOPLIST_FILE = "CocoJS/CocoJS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CocoJS/libs\"",
+				);
+				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -268,8 +579,44 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
 				INFOPLIST_FILE = "CocoJS/CocoJS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CocoJS/libs\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		06D7FCBB16350713000E6576 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/CocoJS.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CocoJS/libs\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		06D7FCBC16350713000E6576 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/CocoJS.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJS/CocoJS-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CocoJS/libs\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -285,13 +632,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */ = {
+		06D7FCAA163506D8000E6576 /* Build configuration list for PBXNativeTarget "app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06D7FCAB163506D8000E6576 /* Debug */,
 				06D7FCAC163506D8000E6576 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06D7FCBA16350713000E6576 /* Build configuration list for PBXNativeTarget "CocoJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06D7FCBB16350713000E6576 /* Debug */,
+				06D7FCBC16350713000E6576 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
