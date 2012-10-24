@@ -12,6 +12,8 @@
 
 static int internalOperation = 0;
 
+static JSFunction *createSelectorFunc;
+
 static JSBool objc_property_op(JSContext *cx, JSHandleObject obj, JSHandleId jid, jsval *vp) {
     if (internalOperation) return JS_TRUE;
     
@@ -26,14 +28,32 @@ static JSBool objc_property_setter(JSContext *cx, JSHandleObject obj, JSHandleId
 static JSBool resolve_objc_selector(JSContext *cx, JSHandleObject obj, JSHandleId jid) {
     if (internalOperation) return JS_TRUE;
     
-    internalOperation++;
-    
     JSString *jsname = JSID_TO_STRING(jid);
     const char *selname = JS_EncodeString(cx, jsname);
     
+    static JSObject *proto;
+    if (!proto) {
+        proto = JS_GetGlobalObject(cx);
+        jsval objectval;
+        JS_GetProperty(cx, proto, "Object", &objectval);
+        jsval objprotoval;
+        JS_GetProperty(cx, JSVAL_TO_OBJECT(objectval), "prototype", &objprotoval);
+        proto = JSVAL_TO_OBJECT(objprotoval);
+    }
+    JSBool found;
+    MASSERT_SOFT(JS_HasPropertyById(cx, proto, jid, &found));
+    if (found) {
+        return JS_TRUE;
+    }
     
+    jsval rval;
+    jsval arg = STRING_TO_JSVAL(jsname);
+    JS_CallFunction(cx, obj, createSelectorFunc, 1, &arg, &rval);
     
+    internalOperation++;
+    JS_SetProperty(cx, obj, selname, &rval);
     internalOperation--;
+    
     return JS_TRUE;
 }
 
@@ -123,7 +143,11 @@ static JSBool js_objc_alloc(JSContext *cx, uint32_t argc, jsval *vp) {
     Class cls = NSClassFromString(@(jsval_to_string(cx, nameval)));
     id nsobj = [[cls alloc] autorelease];
     
+    internalOperation++;
+    
     associate_object(cx, obj, nsobj);   // this will retain the object
+    
+    internalOperation--;
     
     JS_SET_RVAL(cx, vp, JSVAL_VOID);
     return JS_TRUE;
@@ -135,6 +159,27 @@ static JSBool js_objc_gc(JSContext *cx, uint32_t argc, jsval *vp) {
     return JS_TRUE;
 }
 
+static JSBool js_log(JSContext *cx, uint32_t argc, jsval *vp) {
+    jsval *argvp = JS_ARGV(cx, vp);
+    
+    if (argc == 0) {
+        printf("\n");
+    } else {
+        NSMutableString *str = [NSMutableString string];
+        for (int i = 0; i < argc; i++) {
+            NSString *value = jsval_to_NSString(cx, argvp[i]);
+            [str appendString:value];
+            if (i != argc-1) {
+                [str appendString:@", "];
+            }
+        }
+        NSLog(@"%@", str);
+    }
+    
+    JS_SET_RVAL(cx, vp, JSVAL_VOID);
+    return JS_TRUE;
+}
+
 void js_objc_init(JSContext *cx, JSObject *global) {
     JSObject *obj = JS_NewObject(cx, &js_objc_class, NULL, NULL);
     jsval objval = OBJECT_TO_JSVAL(obj);
@@ -142,9 +187,15 @@ void js_objc_init(JSContext *cx, JSObject *global) {
     
     internalOperation++;
     
+    JS_DefineFunction(cx, obj, "log", js_log, 1, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
+    
     JS_DefineFunction(cx, obj, "_perform", perform_selector, 2, JSPROP_READONLY | JSPROP_PERMANENT );
     JS_DefineFunction(cx, obj, "_alloc", js_objc_alloc, 1, JSPROP_READONLY | JSPROP_PERMANENT );
     JS_DefineFunction(cx, obj, "gc", js_objc_gc, 0, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
+    
+    const char *argname = "sel";
+    const char *funcbody = "return function() {[].splice.call(arguments, 0, 0, this, sel);return objc._perform.apply(null, arguments);}";
+    createSelectorFunc = JS_CompileFunction(cx, obj, "_selector", 1, &argname, funcbody, strlen(funcbody), NULL, 0);
     
     internalOperation--;
 }

@@ -11,6 +11,8 @@
 #import "jsapi.h"
 #import "js_objc_binding.h"
 
+static JSCore *sharedInstance;
+
 @interface JSCore ()
 
 @property (nonatomic, retain) NSString *errorString;
@@ -21,18 +23,18 @@ static JSClass global_class = { "Global", JSCLASS_GLOBAL_FLAGS, JS_PropertyStub,
 
 /* The error reporter callback. */
 static void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
-    [JSCore sharedInstance].errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
-    MDLOG(@"%@", [JSCore sharedInstance].errorString);
+    sharedInstance.errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
+    MDLOG(@"%@", sharedInstance.errorString);
     
 }
 
 @implementation JSCore
 
 + (JSCore *)sharedInstance {
-    static JSCore *sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
+        js_objc_init(sharedInstance.cx, sharedInstance.global);
     });
     return sharedInstance;
 }
@@ -53,8 +55,6 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
         _global = JS_NewGlobalObject(_cx, &global_class, NULL);
         /* Populate the global object with the standard globals, like Object and Array. */
         JS_InitStandardClasses(_cx, _global);
-        
-        js_objc_init(_cx, _global);
         
     }
     return self;

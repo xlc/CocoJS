@@ -55,11 +55,6 @@ const char *jsval_to_string(JSContext *cx, jsval val) {
     return JS_EncodeString(cx, JSVAL_TO_STRING(val));
 }
 
-id jsobject_to_objc(JSContext  *cx, JSObject *obj) {
-    id nsobj = (id)JS_GetPrivate(obj);
-    return [[nsobj retain] autorelease];
-}
-
 id jsval_to_objc(JSContext *cx, jsval val) {
     JSType type = JS_TypeOfValue(cx, val);
     switch (type) {
@@ -134,13 +129,21 @@ static void release_obj(JSFreeOp *op, JSObject *obj) {
 
 JSClass js_objc_holder_class = { "ObjCObjectHolder", JSCLASS_HAS_PRIVATE, JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, release_obj, JSCLASS_NO_OPTIONAL_MEMBERS };
 
+id jsobject_to_objc(JSContext  *cx, JSObject *obj) {
+    jsval val;
+    JS_GetProperty(cx, obj, "__holder__", &val);
+    JSObject *holder = JSVAL_TO_OBJECT(val);
+    id nsobj = (id)JS_GetInstancePrivate(cx, holder, &js_objc_holder_class, NULL);
+    return [[nsobj retain] autorelease];
+}
+
 void associate_object(JSContext *cx, JSObject *jsobj, id nsobj) {
     [nsobj retain];
     
     JSObject *holder = JS_NewObject(cx, &js_objc_holder_class, NULL, NULL);
     jsval holderval = OBJECT_TO_JSVAL(holder);
     
-    JS_SetProperty(cx, jsobj, "_holder", &holderval);
+    JS_SetProperty(cx, jsobj, "__holder__", &holderval);
     
     JS_SetPrivate(jsobj, nsobj);
     JS_SetPrivate(holder, nsobj);
@@ -243,7 +246,6 @@ JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val)
 }
 
 #define COPY_TO_BUFF(e) COPY_TO_BUFF2(e) break
-
 #define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); size = sizeof(_ret); memcpy(buff, &_ret, size); return JS_TRUE;}
 
 JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, unsigned *outsize) {
