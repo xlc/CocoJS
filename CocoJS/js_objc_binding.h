@@ -9,5 +9,3 @@
 #import "jsapi.h"
 
 void js_objc_init(JSContext *cx, JSObject *global);
-
-extern JSClass js_objc_prototype_class;

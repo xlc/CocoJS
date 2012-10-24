@@ -16,7 +16,7 @@ static JSFunction *createSelectorFunc;
 
 static JSBool objc_property_op(JSContext *cx, JSHandleObject obj, JSHandleId jid, jsval *vp) {
     if (internalOperation) return JS_TRUE;
-    
+    MDLOG(@"property change blocked: %s", JS_EncodeString(cx, JSID_TO_STRING(jid)));
     *vp = JSVAL_VOID;
     return JS_FALSE;
 }
@@ -57,17 +57,73 @@ static JSBool resolve_objc_selector(JSContext *cx, JSHandleObject obj, JSHandleI
     return JS_TRUE;
 }
 
-JSClass js_objc_prototype_class = { "ObjCInstancePrototype", 0, objc_property_op, objc_property_op, JS_PropertyStub, objc_property_setter, JS_EnumerateStub, resolve_objc_selector, JS_ConvertStub, NULL, JSCLASS_NO_OPTIONAL_MEMBERS };
+static JSClass js_objc_prototype_class = { "ObjCInstancePrototype", 0, objc_property_op, objc_property_op, JS_PropertyStub, objc_property_setter, JS_EnumerateStub, resolve_objc_selector, JS_ConvertStub, NULL, JSCLASS_NO_OPTIONAL_MEMBERS };
+
+static JSBool js_objc_lookup_static_method(JSContext *cx, uint32_t argc, jsval *vp) {
+    
+    jsval *argvp = JS_ARGV(cx, vp);
+    
+    JSObject *thisobj = JS_THIS_OBJECT(cx, vp);
+    jsval nameval;
+    MASSERT_SOFT(JS_GetProperty(cx, thisobj, "name", &nameval));
+    Class cls = NSClassFromString(@(jsval_to_string(cx, nameval)));
+    
+    if (!JSVAL_IS_STRING(argvp[0])) return JS_FALSE;
+    const char *selname = jsval_to_string(cx, argvp[0]);
+    
+    unsigned len;
+    MASSERT_SOFT(JS_GetArrayLength(cx, JSVAL_TO_OBJECT(argvp[1]), &len));
+    
+    SEL sel = find_selector(cls, selname, len);
+    if (!sel) {
+        MILOG(@"cannot find selector '%s' for class %@", selname, cls);
+        return JS_FALSE;
+    }
+    
+    JSBool ok = JS_TRUE;
+    NSMethodSignature *signature = [cls methodSignatureForSelector:sel];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    [invocation setTarget:cls];
+    [invocation setSelector:sel];
+    for (int i = 0; i < len; i++) {
+        ok &= set_argument(cx, invocation, i, argvp[i]);
+    }
+    if (!ok) return JS_FALSE;
+    [invocation invoke];
+    
+    jsval rval;
+    void *retval = malloc([signature methodReturnLength]);
+    [invocation getReturnValue:retval];
+    
+    ok &= jsval_from_type(cx, [signature methodReturnType], retval, &rval);
+    free(retval);
+    
+    JS_SET_RVAL(cx, vp, rval);
+    return JS_TRUE;
+}
 
 static jsval create_objc_instance_class(JSContext *cx, NSString *clsname) {
     jsval val;
-    const char *script = [[NSString stringWithFormat:@"(function(){function %@ () {objc._alloc(this)}; return %@;})()", clsname, clsname] UTF8String];
+    const char *script = [[NSString stringWithFormat:@"(function(){function %@ () {objc._alloc(this)};%@.toString = function(){return '%@'}; return %@;})()", clsname, clsname, clsname, clsname] UTF8String];
     MASSERT_SOFT(JS_EvaluateScript(cx, JS_GetGlobalObject(cx), script, strlen(script), NULL, 0, &val));
+    
+    JSObject *obj = JSVAL_TO_OBJECT(val);
     
     JSObject *proto = JS_NewObject(cx, &js_objc_prototype_class, NULL, NULL);
     jsval protoval = OBJECT_TO_JSVAL(proto);
-    JS_SetProperty(cx, JSVAL_TO_OBJECT(val), "prototype", &protoval);   // class.prototype = proto
+    JS_SetProperty(cx, obj, "prototype", &protoval);   // class.prototype = proto
     JS_SetProperty(cx, proto, "constructor", &val);     // class.prototype.constructor = class
+    
+    int op = internalOperation;
+    internalOperation = 0;
+    jsval descval;
+    JS_GetProperty(cx, proto, "description", &descval);
+    internalOperation = op;
+    internalOperation++;
+    JS_SetProperty(cx, proto, "toString", &descval);  // proto.toString = proto.description
+    internalOperation--;
+    
+    JS_DefineFunction(cx, obj, "__noSuchMethod__", js_objc_lookup_static_method, 2, JSPROP_READONLY | JSPROP_PERMANENT );       // for static method lookup
     
     return val;
 }
