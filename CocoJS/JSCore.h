@@ -22,4 +22,10 @@
 - (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal;
 - (BOOL)evaluateFile:(NSString *)filepath;
 
+- (void)gc;
+- (void)gcIfNeed;
+
+- (void)startAutoGC;
+- (void)stopAutoGC;
+
 @end

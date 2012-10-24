@@ -28,7 +28,9 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     
 }
 
-@implementation JSCore
+@implementation JSCore {
+    BOOL _autoGC;
+}
 
 + (JSCore *)sharedInstance {
     static dispatch_once_t onceToken;
@@ -56,6 +58,7 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
         /* Populate the global object with the standard globals, like Object and Array. */
         JS_InitStandardClasses(_cx, _global);
         
+        [self startAutoGC];
     }
     return self;
 }
@@ -88,6 +91,32 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     }
 	
     return [self evaluateString:script outVal:nil];
+}
+
+#pragma mark -
+
+- (void)gc {
+    JS_GC(_rt);
+}
+
+- (void)gcIfNeed {
+    JS_MaybeGC(_cx);
+}
+
+- (void)startAutoGC {
+    _autoGC = YES;
+    int64_t delayInSeconds = 1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (_autoGC) {
+            [self gcIfNeed];
+            [self startAutoGC];
+        }
+    });
+}
+
+- (void)stopAutoGC {
+    _autoGC = NO;
 }
 
 @end
