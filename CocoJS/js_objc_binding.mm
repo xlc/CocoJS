@@ -72,7 +72,8 @@ static JSBool js_objc_lookup_static_method(JSContext *cx, uint32_t argc, jsval *
     const char *selname = jsval_to_string(cx, argvp[0]);
     
     unsigned len;
-    MASSERT_SOFT(JS_GetArrayLength(cx, JSVAL_TO_OBJECT(argvp[1]), &len));
+    JSObject *argv = JSVAL_TO_OBJECT(argvp[1]);
+    MASSERT_SOFT(JS_GetArrayLength(cx, argv, &len));
     
     SEL sel = find_selector(cls, selname, len);
     if (!sel) {
@@ -86,7 +87,9 @@ static JSBool js_objc_lookup_static_method(JSContext *cx, uint32_t argc, jsval *
     [invocation setTarget:cls];
     [invocation setSelector:sel];
     for (int i = 0; i < len; i++) {
-        ok &= set_argument(cx, invocation, i, argvp[i]);
+        jsval arg;
+        MASSERT_SOFT(JS_GetElement(cx, argv, i, &arg));
+        ok &= set_argument(cx, invocation, i, arg);
     }
     if (!ok) return JS_FALSE;
     [invocation invoke];
@@ -121,6 +124,8 @@ static jsval create_objc_instance_class(JSContext *cx, NSString *clsname) {
     internalOperation = op;
     internalOperation++;
     JS_SetProperty(cx, proto, "toString", &descval);  // proto.toString = proto.description
+    
+    associate_object(cx, obj, NSClassFromString(clsname));
     internalOperation--;
     
     JS_DefineFunction(cx, obj, "__noSuchMethod__", js_objc_lookup_static_method, 2, JSPROP_READONLY | JSPROP_PERMANENT );       // for static method lookup
@@ -243,7 +248,7 @@ void js_objc_init(JSContext *cx, JSObject *global) {
     
     internalOperation++;
     
-    JS_DefineFunction(cx, obj, "log", js_log, 1, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
+    JS_DefineFunction(cx, global, "log", js_log, 1, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
     
     JS_DefineFunction(cx, obj, "_perform", perform_selector, 2, JSPROP_READONLY | JSPROP_PERMANENT );
     JS_DefineFunction(cx, obj, "_alloc", js_objc_alloc, 1, JSPROP_READONLY | JSPROP_PERMANENT );

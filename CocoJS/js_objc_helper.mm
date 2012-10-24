@@ -65,6 +65,8 @@ id jsval_to_objc(JSContext *cx, jsval val) {
                 return @(JSVAL_TO_INT(val));
             }
             return @(JSVAL_TO_DOUBLE(val));
+            
+        case JSTYPE_FUNCTION:
         case JSTYPE_OBJECT:
         {
             JSObject *obj = JSVAL_TO_OBJECT(val);
@@ -87,7 +89,7 @@ id jsval_to_objc(JSContext *cx, jsval val) {
             
         case JSTYPE_NULL:
         case JSTYPE_VOID:
-        case JSTYPE_FUNCTION: // not supported
+        
         default:
             return nil;
     }
@@ -145,7 +147,6 @@ void associate_object(JSContext *cx, JSObject *jsobj, id nsobj) {
     
     JS_SetProperty(cx, jsobj, "__holder__", &holderval);
     
-    JS_SetPrivate(jsobj, nsobj);
     JS_SetPrivate(holder, nsobj);
     
     objc_setAssociatedObject(nsobj, &associate_key, [NSValue valueWithPointer:jsobj], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
