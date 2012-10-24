@@ -6,23 +6,21 @@
 //  Copyright (c) 2012年 Xiliang Chen. All rights reserved.
 //
 
-#include <vector>
-using namespace std;
-
 #import "JSCore.h"
 
 #import "jsapi.h"
+#import "js_objc_binding.h"
 
 @interface JSCore ()
 
-@property (nonatomic) NSString *errorString;
+@property (nonatomic, retain) NSString *errorString;
 
 @end
 
 static JSClass global_class = { "Global", JSCLASS_GLOBAL_FLAGS, JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, NULL, JSCLASS_NO_OPTIONAL_MEMBERS };
 
 /* The error reporter callback. */
-void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
+static void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
     [JSCore sharedInstance].errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
     MDLOG(@"%@", [JSCore sharedInstance].errorString);
     
@@ -52,9 +50,11 @@ void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
         JS_SetVersion(_cx, JSVERSION_LATEST);
         JS_SetErrorReporter(_cx, reportError);
         /* Create the global object in a new compartment. */
-        _global = JS_NewCompartmentAndGlobalObject(_cx, &global_class, NULL);
+        _global = JS_NewGlobalObject(_cx, &global_class, NULL);
         /* Populate the global object with the standard globals, like Object and Array. */
         JS_InitStandardClasses(_cx, _global);
+        
+        js_objc_init(_cx, _global);
         
     }
     return self;
@@ -72,6 +72,7 @@ void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
 
 - (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal
 {
+    self.errorString = @"";
 	const char *cstr = [string UTF8String];
 	BOOL ok = JS_EvaluateScript( _cx, _global, cstr, (unsigned)strlen(cstr), "noname", 0, outVal);
 	return ok;

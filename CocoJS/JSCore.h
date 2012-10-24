@@ -15,7 +15,7 @@
 @property (nonatomic, readonly) JSRuntime *rt;
 @property (nonatomic, readonly) JSContext *cx;
 @property (nonatomic, readonly) JSObject *global;
-@property (nonatomic, readonly) NSString *errorString;
+@property (nonatomic, retain, readonly) NSString *errorString;
 
 + (JSCore *)sharedInstance;
 

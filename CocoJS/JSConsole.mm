@@ -11,7 +11,7 @@
 #import "JSCore.h"
 #import "HighlightingTextView.h"
 #import "JavascriptSyntaxHighlighter.h"
-#import "jsval_helper.h"
+#import "js_objc_helper.h"
 
 static JSConsole *sharedConsole;
 
@@ -258,7 +258,7 @@ static JSConsole *sharedConsole;
 
 - (void)appendValue:(jsval)value {
     if (!JSVAL_IS_VOID(value)) {
-        [self appendMessage:jsval_to_string(value)];
+        [self appendMessage:jsval_to_NSString([JSCore sharedInstance].cx, value)];
     }
 }
 

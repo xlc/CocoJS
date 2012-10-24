@@ -1,46 +1,15 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  * vim: set ts=8 sw=4 et tw=99 ft=cpp:
  *
- * ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Mozilla SpiderMonkey JavaScript code.
- *
- * The Initial Developer of the Original Code is
- * the Mozilla Foundation.
- * Portions created by the Initial Developer are Copyright (C) 2011
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #ifndef js_utility_h__
 #define js_utility_h__
 
 #include "mozilla/Assertions.h"
+#include "mozilla/Attributes.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +22,7 @@
 #include "jstypes.h"
 
 #ifdef __cplusplus
+# include "mozilla/Scoped.h"
 
 /* The public JS engine namespace. */
 namespace JS {}
@@ -96,6 +66,9 @@ JS_BEGIN_EXTERN_C
 
 #define JS_STATIC_ASSERT(cond)           MOZ_STATIC_ASSERT(cond, "JS_STATIC_ASSERT")
 #define JS_STATIC_ASSERT_IF(cond, expr)  MOZ_STATIC_ASSERT_IF(cond, expr, "JS_STATIC_ASSERT_IF")
+
+extern MOZ_NORETURN JS_PUBLIC_API(void)
+JS_Assert(const char *s, const char *file, int ln);
 
 /*
  * Abort the process in a non-graceful manner. This will cause a core file,
@@ -158,9 +131,20 @@ PrintBacktrace()
         } \
     } while (0)
 
+#  define JS_OOM_POSSIBLY_FAIL_REPORT(cx) \
+    do \
+    { \
+        if (++OOM_counter > OOM_maxAllocations) { \
+            JS_OOM_EMIT_BACKTRACE();\
+            js_ReportOutOfMemory(cx);\
+            return NULL; \
+        } \
+    } while (0)
+
 # else
 #  define JS_OOM_POSSIBLY_FAIL() do {} while(0)
-# endif
+#  define JS_OOM_POSSIBLY_FAIL_REPORT(cx) do {} while(0)
+# endif /* DEBUG */
 
 /*
  * SpiderMonkey code should not be calling these allocation functions directly.
@@ -332,22 +316,6 @@ __BitScanReverse64(unsigned __int64 val)
     JS_END_MACRO
 #endif
 
-/*
- * Internal function.
- * Compute the log of the least power of 2 greater than or equal to n. This is
- * a version of JS_CeilingLog2 that operates on unsigned integers with
- * CPU-dependant size.
- */
-#define JS_CEILING_LOG2W(n) ((n) <= 1 ? 0 : 1 + JS_FLOOR_LOG2W((n) - 1))
-
-/*
- * Internal function.
- * Compute the log of the greatest power of 2 less than or equal to n.
- * This is a version of JS_FloorLog2 that operates on unsigned integers with
- * CPU-dependant size and requires that n != 0.
- */
-#define JS_FLOOR_LOG2W(n) (JS_ASSERT((n) != 0), js_FloorLog2wImpl(n))
-
 #if JS_BYTES_PER_WORD == 4
 # ifdef JS_HAS_BUILTIN_BITSCAN32
 #  define js_FloorLog2wImpl(n)                                                \
@@ -364,6 +332,47 @@ JS_PUBLIC_API(size_t) js_FloorLog2wImpl(size_t n);
 # endif
 #else
 # error "NOT SUPPORTED"
+#endif
+
+/*
+ * Internal function.
+ * Compute the log of the least power of 2 greater than or equal to n. This is
+ * a version of JS_CeilingLog2 that operates on unsigned integers with
+ * CPU-dependant size.
+ */
+#define JS_CEILING_LOG2W(n) ((n) <= 1 ? 0 : 1 + JS_FLOOR_LOG2W((n) - 1))
+
+/*
+ * Internal function.
+ * Compute the log of the greatest power of 2 less than or equal to n.
+ * This is a version of JS_FloorLog2 that operates on unsigned integers with
+ * CPU-dependant size and requires that n != 0.
+ */
+static MOZ_ALWAYS_INLINE size_t
+JS_FLOOR_LOG2W(size_t n)
+{
+    JS_ASSERT(n != 0);
+    return js_FloorLog2wImpl(n);
+}
+
+/*
+ * JS_ROTATE_LEFT32
+ *
+ * There is no rotate operation in the C Language so the construct (a << 4) |
+ * (a >> 28) is used instead. Most compilers convert this to a rotate
+ * instruction but some versions of MSVC don't without a little help.  To get
+ * MSVC to generate a rotate instruction, we have to use the _rotl intrinsic
+ * and use a pragma to make _rotl inline.
+ *
+ * MSVC in VS2005 will do an inline rotate instruction on the above construct.
+ */
+#if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_AMD64) || \
+    defined(_M_X64))
+#include <stdlib.h>
+#pragma intrinsic(_rotl)
+#define JS_ROTATE_LEFT32(a, bits) _rotl(a, bits)
+#else
+#define JS_ROTATE_LEFT32(a, bits) (((a) << (bits)) | ((a) >> (32 - (bits))))
 #endif
 
 JS_END_EXTERN_C
@@ -610,6 +619,22 @@ public:
 class UnwantedForeground : public Foreground {
 };
 
+template<typename T>
+struct ScopedFreePtrTraits
+{
+    typedef T* type;
+    static T* empty() { return NULL; }
+    static void release(T* ptr) { Foreground::free_(ptr); }
+};
+SCOPED_TEMPLATE(ScopedFreePtr, ScopedFreePtrTraits)
+
+template <typename T>
+struct ScopedDeletePtrTraits : public ScopedFreePtrTraits<T>
+{
+    static void release(T *ptr) { Foreground::delete_(ptr); }
+};
+SCOPED_TEMPLATE(ScopedDeletePtr, ScopedDeletePtrTraits)
+
 } /* namespace js */
 
 /*
@@ -831,20 +856,7 @@ class MoveRef {
     explicit MoveRef(T &t) : pointer(&t) { }
     T &operator*()  const { return *pointer; }
     T *operator->() const { return  pointer; }
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
-    /*
-     * If MoveRef is used in a rvalue position (which is expected), we can
-     * end up in a situation where, without this ifdef, we would try to pass
-     * a T& to a move constructor, which fails. It is not clear if the compiler
-     * should instead use the copy constructor, but for now this lets us build
-     * with clang. See bug 689066 and llvm.org/pr11003 for the details.
-     * Note: We can probably remove MoveRef completely once we are comfortable
-     * using c++11.
-     */
-    operator T&& ()  const { return static_cast<T&&>(*pointer); }
-#else
     operator T& ()   const { return *pointer; }
-#endif
   private:
     T *pointer;
 };
@@ -897,7 +909,86 @@ RoundUpPow2(size_t x)
     return size_t(1) << JS_CEILING_LOG2W(x);
 }
 
+/* Integral types for all hash functions. */
+typedef uint32_t HashNumber;
+const unsigned HashNumberSizeBits = 32;
+
+namespace detail {
+
+/*
+ * Given a raw hash code, h, return a number that can be used to select a hash
+ * bucket.
+ *
+ * This function aims to produce as uniform an output distribution as possible,
+ * especially in the most significant (leftmost) bits, even though the input
+ * distribution may be highly nonrandom, given the constraints that this must
+ * be deterministic and quick to compute.
+ *
+ * Since the leftmost bits of the result are best, the hash bucket index is
+ * computed by doing ScrambleHashCode(h) / (2^32/N) or the equivalent
+ * right-shift, not ScrambleHashCode(h) % N or the equivalent bit-mask.
+ *
+ * FIXME: OrderedHashTable uses a bit-mask; see bug 775896.
+ */
+inline HashNumber
+ScrambleHashCode(HashNumber h)
+{
+    /*
+     * Simply returning h would not cause any hash tables to produce wrong
+     * answers. But it can produce pathologically bad performance: The caller
+     * right-shifts the result, keeping only the highest bits. The high bits of
+     * hash codes are very often completely entropy-free. (So are the lowest
+     * bits.)
+     *
+     * So we use Fibonacci hashing, as described in Knuth, The Art of Computer
+     * Programming, 6.4. This mixes all the bits of the input hash code h.
+     * 
+     * The value of goldenRatio is taken from the hex
+     * expansion of the golden ratio, which starts 1.9E3779B9....
+     * This value is especially good if values with consecutive hash codes
+     * are stored in a hash table; see Knuth for details.
+     */
+    static const HashNumber goldenRatio = 0x9E3779B9U;
+    return h * goldenRatio;
+}
+
+} /* namespace detail */
+
 } /* namespace js */
+
+namespace JS {
+
+/*
+ * Methods for poisoning GC heap pointer words and checking for poisoned words.
+ * These are in this file for use in Value methods and so forth.
+ *
+ * If the moving GC hazard analysis is in use and detects a non-rooted stack
+ * pointer to a GC thing, one byte of that pointer is poisoned to refer to an
+ * invalid location. For both 32 bit and 64 bit systems, the fourth byte of the
+ * pointer is overwritten, to reduce the likelihood of accidentally changing
+ * a live integer value.
+ */
+
+inline void PoisonPtr(void *v)
+{
+#if defined(JSGC_ROOT_ANALYSIS) && defined(DEBUG)
+    uint8_t *ptr = (uint8_t *) v + 3;
+    *ptr = JS_FREE_PATTERN;
+#endif
+}
+
+template <typename T>
+inline bool IsPoisonedPtr(T *v)
+{
+#if defined(JSGC_ROOT_ANALYSIS) && defined(DEBUG)
+    uint32_t mask = uintptr_t(v) & 0xff000000;
+    return mask == uint32_t(JS_FREE_PATTERN << 24);
+#else
+    return false;
+#endif
+}
+
+}
 
 #endif /* defined(__cplusplus) */
 
