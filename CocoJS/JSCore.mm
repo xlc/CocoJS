@@ -81,6 +81,11 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	return ok;
 }
 
+- (BOOL)evaluateScript:(NSString *)filename {
+    NSString *filepath = [[NSBundle mainBundle] pathForResource:filename ofType:@"js" inDirectory:@"scripts"];
+    return [self evaluateFile:filepath];
+}
+
 - (BOOL)evaluateFile:(NSString *)filepath {
     
     NSError *error = nil;

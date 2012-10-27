@@ -12,6 +12,7 @@
 		06498F1A16356B38003F0C16 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06498F1916356B38003F0C16 /* CoreText.framework */; };
 		06498F1B16356B3F003F0C16 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06498F1916356B38003F0C16 /* CoreText.framework */; };
 		06498F2216364C43003F0C16 /* js_objc_binding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06498F2016364C43003F0C16 /* js_objc_binding.mm */; };
+		06499055163BD534003F0C16 /* scripts in Resources */ = {isa = PBXBuildFile; fileRef = 06499054163BD34F003F0C16 /* scripts */; };
 		06D7FC8B163506D7000E6576 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8A163506D7000E6576 /* UIKit.framework */; };
 		06D7FC8D163506D7000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D7FC8F163506D7000E6576 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8E163506D7000E6576 /* CoreGraphics.framework */; };
@@ -119,6 +120,7 @@
 		06498F6416366218003F0C16 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		06498F6516366218003F0C16 /* TypeTraits.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TypeTraits.h; sourceTree = "<group>"; };
 		06498F6616366218003F0C16 /* Util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		06499054163BD34F003F0C16 /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = scripts; sourceTree = "<group>"; };
 		06D7FC86163506D7000E6576 /* app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D7FC8A163506D7000E6576 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		06D7FC8C163506D7000E6576 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -313,6 +315,7 @@
 		06D7FC90163506D7000E6576 /* CocoJS */ = {
 			isa = PBXGroup;
 			children = (
+				06499054163BD34F003F0C16 /* scripts */,
 				06D7FCC816353732000E6576 /* lib */,
 				06D7FC99163506D8000E6576 /* AppDelegate.h */,
 				06D7FC9A163506D8000E6576 /* AppDelegate.m */,
@@ -457,6 +460,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06499055163BD534003F0C16 /* scripts in Resources */,
 				06D7FC95163506D8000E6576 /* InfoPlist.strings in Resources */,
 				06D7FC9D163506D8000E6576 /* Default.png in Resources */,
 				06D7FC9F163506D8000E6576 /* Default@2x.png in Resources */,

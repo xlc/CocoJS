@@ -21,6 +21,7 @@
 
 - (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal;
 - (BOOL)evaluateFile:(NSString *)filepath;
+- (BOOL)evaluateScript:(NSString *)filename;
 
 - (void)gc;
 - (void)gcIfNeed;

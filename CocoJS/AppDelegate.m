@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 #import "ViewController.h"
+#import "JSCore.h"
 
 @implementation AppDelegate
 
@@ -26,6 +27,9 @@
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
+    [[JSCore sharedInstance] evaluateScript:@"main"];
+    
     return YES;
 }
 

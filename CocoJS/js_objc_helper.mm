@@ -12,8 +12,10 @@
 #include <algorithm>
 
 #import "js_objc_binding.h"
+#import "JSCore.h"
 
 static char associate_key;
+static char buff[256];
 
 NSString *jsval_to_NSString(JSContext *cx, jsval val) {
     JSType type = JS_TypeOfValue(cx, val);
@@ -89,13 +91,16 @@ id jsval_to_objc(JSContext *cx, jsval val) {
             
         case JSTYPE_NULL:
         case JSTYPE_VOID:
-        
+            
         default:
             return nil;
     }
 }
 
 jsval jsval_from_objc(JSContext *cx, id object) {
+    if (!object) {
+        return JSVAL_NULL;
+    }
     NSValue *jsobjptr = objc_getAssociatedObject(object, &associate_key);
     if (jsobjptr) {
         JSObject *jsobj = (JSObject *)[jsobjptr pointerValue];
@@ -160,8 +165,8 @@ void remove_associated_object(JSObject *jsobj) {
 }
 
 SEL find_selector(id obj, const char *selname, int argc) {
+    char *cstr = buff;
     SEL sel;
-    static char cstr[256];
     
     if (argc == 0) {
         sel = sel_getUid(selname);
@@ -171,13 +176,17 @@ SEL find_selector(id obj, const char *selname, int argc) {
         return NULL;
     }
     
-    strncpy(cstr, selname, sizeof(cstr));
+    strncpy(cstr, selname, sizeof(buff));
     unsigned len = strlen(cstr);
-    MASSERT((len + argc + 1) < sizeof(cstr), @"selector too long: %s", selname);
+    MASSERT((len + argc + 1) < sizeof(buff), @"selector too long: %s", selname);
     
-    if (argc >= 1 && cstr[len-1] != ':') {
-        cstr[len++] = ':';    // must end with ':'
-        cstr[len] = '\0';
+    if (argc >= 1) {    // must end with ':'
+        if (cstr[len-1] == '_') {
+            cstr[len-1] = ':';
+        } else if (cstr[len-1] != ':') {
+            cstr[len] = ':';
+            cstr[++len] = '\0';
+        }
     }
     
     int c = std::count(cstr, cstr+len, ':');
@@ -193,15 +202,18 @@ SEL find_selector(id obj, const char *selname, int argc) {
         }
     }
     
-    if (c > 1) {
+    if (c == 1) {
         
         // cannot mix '_' and ':'
         
         c = std::count(cstr, cstr+len, '_') + 1;
         if (c > argc) {  // some '_' at beginning of the real selector?
             char *buff = cstr+len;
-            for (int i = 0; i < (c-argc); i++, buff--) {
-                if (*buff == '_') *buff = ':';
+            for (int i = 0; i < (c-argc);buff--) {
+                if (*buff == '_') {
+                    *buff = ':';
+                    i++;
+                }
             }
             sel = sel_getUid(cstr);
             if ([obj respondsToSelector:sel]) {
@@ -225,12 +237,101 @@ SEL find_selector(id obj, const char *selname, int argc) {
     
     // try append ':' at end of selector to match numebr of arugments
     for (int i = 0; i < argc - c; i++) {
-        cstr[len++] = ':';    // must end with ':'
-        cstr[len] = '\0';
-        sel = sel_getUid(cstr);
-        if ([obj respondsToSelector:sel]) {
-            return sel;
+        cstr[len++] = ':';
+    }
+    cstr[len] = '\0';
+    sel = sel_getUid(cstr);
+    if ([obj respondsToSelector:sel]) {
+        return sel;
+    }
+    
+    return NULL;
+}
+
+static SEL process_selector(Class cls, const char *selname, int argc) {
+    char *cstr = buff;
+    
+    if (argc == 0) {
+        return sel_getUid(selname);
+    }
+    
+    strncpy(cstr, selname, sizeof(buff));
+    unsigned len = strlen(cstr);
+    MASSERT((len + argc + 1) < sizeof(buff), @"selector too long: %s", selname);
+    
+    int c = 0;
+    if (argc >= 1) {    // must end with ':'
+        if (cstr[len-1] != ':') {
+            cstr[len] = ':';
+            cstr[++len] = '\0';
+            c = 1;
         }
+    }
+    
+    c += std::count(cstr, cstr+len, '_');
+    if (c > argc) {  // some '_' at beginning of the real selector?
+        char *buff = cstr+len;
+        for (int i = 0; i < (c-argc);buff--) {
+            if (*buff == '_') {
+                *buff = ':';
+                i++;
+            }
+        }
+        return sel_getUid(selname);
+    }
+    
+    for (int i = 0; cstr[i]; i++) {
+        if (cstr[i] == '_') cstr[i] = ':';
+    }
+    
+    if (c == argc) {
+        return sel_getUid(selname);
+    }
+    
+    
+    // try append ':' at end of selector to match numebr of arugments
+    for (int i = 0; i < argc - c; i++) {
+        cstr[len++] = ':';
+    }
+    cstr[len] = '\0';
+    return sel_getUid(selname);
+}
+
+SEL find_selector_class(Class cls, const char *selname, int argc, char **typedesc, char **rettype) {
+    SEL sel = process_selector(cls, selname, argc);
+    
+    // override method?
+    
+    Method method = class_getInstanceMethod(cls, sel);
+    if (method) { // Is method defined in the superclass?
+        *typedesc = (char *)method_getTypeEncoding(method);
+        *rettype = method_copyReturnType(method);
+        return sel;
+    }
+    
+    // implement protocol?
+    
+    while (cls) { // Walk up the object heirarchy
+        uint count;
+        Protocol **protocols = class_copyProtocolList(cls, &count);
+        
+        for (int i = 0; i < count; i++) {
+            Protocol *protocol = protocols[i];
+            struct objc_method_description methoddesc;
+            methoddesc = protocol_getMethodDescription(protocol, sel, YES, YES); // required method
+            if (!methoddesc.name)
+                methoddesc = protocol_getMethodDescription(protocol, sel, NO, YES); // optional method
+            if (methoddesc.name) {
+                *typedesc = methoddesc.types;
+                *rettype = method_copyReturnType((Method)&method);
+                
+                free(protocols);
+                return sel;
+            }
+        }
+        free(protocols);
+        
+        cls = [cls superclass];
     }
     
     return NULL;
@@ -247,12 +348,14 @@ JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val)
 }
 
 #define COPY_TO_BUFF(e) COPY_TO_BUFF2(e) break
-#define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); size = sizeof(_ret); memcpy(buff, &_ret, size); return JS_TRUE;}
+#define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); *outsize = sizeof(_ret); memcpy(buff, &_ret, *outsize); return JS_TRUE;}
 
 JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, unsigned *outsize) {
-    unsigned size;
-    static char buff[256];
     *outval = buff;
+    unsigned size;
+    if (!outsize) {
+        outsize = &size;
+    }
     switch (encode[0]) {
         case _C_CLASS:  //    '#'
         case _C_ID:  //       '@'
@@ -336,6 +439,10 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
 
 JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *outval) {
     switch (encode[0]) {
+        case 0:
+            *outval = JSVAL_VOID;
+            return JS_TRUE;
+            
         case _C_CLASS:  //    '#'
         case _C_ID:  //       '@'
             COPY_FROM_BUFF(id, jsval_from_objc(cx, val));
@@ -400,9 +507,194 @@ JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *ou
         case _C_ATOM:  //     '%'
         default:
             MWLOG(@"unsouportted type %s", encode);
+            *outval = JSVAL_VOID;
             return JS_FALSE;
     }
+}
+
+static JSBool invoke_method(id self, SEL _cmd, va_list ap, void *retvalue) {
+    JSContext *cx = [JSCore sharedInstance].cx;
     
-    // unmatched type
-    return JS_FALSE;
+    jsval val = jsval_from_objc(cx, self);
+    JSObject *obj = JSVAL_TO_OBJECT(val);
+    jsval selmap;
+    JS_GetProperty(cx, obj, "_selectorMap", &selmap);
+    JSObject *selmapobj = JSVAL_TO_OBJECT(selmap);
+    
+    jsval selval;
+    JS_GetProperty(cx, selmapobj, sel_getName(_cmd), &selval);
+    const char *propertyname;
+    if (JSVAL_IS_STRING(selval)) {
+        propertyname = jsval_to_string(cx, selval);
+    } else {
+        char *cstr = buff;
+        strncpy(cstr, sel_getName(_cmd), sizeof(buff));
+        int len = strlen(cstr);
+        char *curr = cstr;
+        while (*curr) {
+            if (*curr == ':') {
+                *curr = '_';
+            }
+            curr++;
+        }
+        JSBool found = JS_FALSE;
+        while (cstr[len-1] == '_') {
+            JS_HasProperty(cx, obj, cstr, &found);
+            if (found) {
+                propertyname = cstr;
+                break;
+            }
+            cstr[--len] = '\0'; // remove last '_'
+        }
+        if (!found) {
+            MELOG(@"cannot find implementation of selector %s in object %@", sel_getName(_cmd), self);
+            return JS_FALSE;
+        }
+    }
+    
+    jsval method;
+    JS_GetProperty(cx, obj, propertyname, &method);
+    
+    NSMethodSignature *signature = [self methodSignatureForSelector:_cmd];
+    int argc = [signature numberOfArguments] - 2;
+    jsval rval;
+    jsval *argv = new jsval[argc];
+    
+    for (int i = 0; i < argc; i++) {
+        const char *type = [signature getArgumentTypeAtIndex:i];
+        MASSERT_SOFT(jsval_from_type(cx, type, ap, argv+i));
+        NSUInteger size;
+        NSGetSizeAndAlignment(type, &size, NULL);
+        ap += size;
+    }
+    
+    MASSERT_SOFT(JS_CallFunctionValue(cx, obj, method, argc, argv, &rval));
+    delete [] argv;
+    
+    void *outval;
+    unsigned size;
+    MASSERT_SOFT(jsval_to_type(cx, rval, [signature methodReturnType], &outval, &size));
+    
+    memcmp(retvalue, outval, size);
+    
+    return JS_TRUE;
+}
+
+// template for method imp
+template <class T>
+T js_objc_method_imp(id self, SEL _cmd, ...) {
+    va_list ap;
+    va_start(ap, _cmd);
+    va_list ap2;
+    va_copy(ap2, ap);
+    
+    T retval;
+    if (!invoke_method(self, _cmd, ap2, &retval)) {
+        MELOG(@"fail to invoke method %s for object %@", sel_getName(_cmd), self);
+        bzero(&retval, sizeof(retval));
+    }
+    
+    va_end(ap2);
+    va_end(ap);
+    
+    return retval;
+}
+
+// for void return type
+template <>
+void js_objc_method_imp<void>(id self, SEL _cmd, ...) {
+    va_list ap;
+    va_start(ap, _cmd);
+    va_list ap2;
+    va_copy(ap2, ap);
+    
+    if (!invoke_method(self, _cmd, ap2, NULL)) {
+        MELOG(@"fail to invoke method %s for object %@", sel_getName(_cmd), self);
+    }
+    
+    va_end(ap2);
+    va_end(ap);
+}
+
+#define METHOD_IMP(type) template type js_objc_method_imp<type>(id self, SEL _cmd, ...);
+METHOD_IMP(Class)
+METHOD_IMP(id)
+METHOD_IMP(SEL)
+METHOD_IMP(int)
+METHOD_IMP(char *)
+METHOD_IMP(BOOL)
+METHOD_IMP(char)
+METHOD_IMP(short)
+METHOD_IMP(long)
+METHOD_IMP(long long)
+METHOD_IMP(float)
+METHOD_IMP(double)
+
+IMP get_imp(char *rettype) {
+    switch (rettype[0]) {
+        case _C_UNDEF:  //    '?'
+        case _C_CONST:  //    'r'
+            return get_imp(rettype+1);
+            
+        case _C_ARY_B:  //    '['
+        case _C_ARY_E:  //    ']'
+        case _C_UNION_B:  //  '('
+        case _C_UNION_E:  //  ')'
+        case _C_STRUCT_B:  // '{'
+        case _C_STRUCT_E:  // '}'
+                           // TODO implement for structs
+            
+            // unsuportted type
+        case _C_BFLD:  //     'b'
+        case _C_VECTOR:  //   '!'
+        case _C_PTR:  //      '^'
+        case _C_ATOM:  //     '%'
+            
+        default:
+            MELOG(@"method return type cannot be handled: %s", rettype);
+            // use void
+        case _C_VOID:  //     'v'
+            return (IMP)js_objc_method_imp<void>;
+            
+        case _C_CLASS:  //    '#'
+            return (IMP)js_objc_method_imp<Class>;
+            
+        case _C_ID:  //       '@'
+            return (IMP)js_objc_method_imp<id>;
+            
+        case _C_SEL:  //      ':'
+            return (IMP)js_objc_method_imp<SEL>;
+            
+        case _C_CHARPTR:  //  '*'
+            return (IMP)js_objc_method_imp<char *>;
+            
+        case _C_BOOL:  //     'B'
+            return (IMP)js_objc_method_imp<BOOL>;
+            
+        case _C_CHR:  //      'c'
+        case _C_UCHR:  //     'C'
+            return (IMP)js_objc_method_imp<char>;
+            
+        case _C_SHT:  //      's'
+        case _C_USHT:  //     'S'
+            return (IMP)js_objc_method_imp<short>;
+            
+        case _C_INT:  //      'i'
+        case _C_UINT:  //     'I'
+            return (IMP)js_objc_method_imp<int>;
+            
+        case _C_LNG:  //      'l'
+        case _C_ULNG:  //     'L'
+            return (IMP)js_objc_method_imp<long>;
+            
+        case _C_LNG_LNG:  //  'q'
+        case _C_ULNG_LNG:  // 'Q'
+            return (IMP)js_objc_method_imp<long long>;
+            
+        case _C_FLT:  //      'f'
+            return (IMP)js_objc_method_imp<float>;
+            
+        case _C_DBL:  //      'd'
+            return (IMP)js_objc_method_imp<double>;
+    }
 }
