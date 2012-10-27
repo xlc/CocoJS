@@ -113,6 +113,11 @@ static jsval create_objc_instance_class(JSContext *cx, const char *clsname) {
     jsval protoval = OBJECT_TO_JSVAL(proto);
     
     internalOperation++;
+    jsval objcval;
+    JS_GetProperty(cx, JS_GetGlobalObject(cx), "objc", &objcval);
+    JS_SetProperty(cx, JSVAL_TO_OBJECT(objcval), clsname, &val);
+    
+    
     JS_SetProperty(cx, obj, "prototype", &protoval);   // class.prototype = proto
     JS_SetProperty(cx, proto, "constructor", &val);     // class.prototype.constructor = class
     internalOperation--;
@@ -151,8 +156,7 @@ static JSBool resolve_objc_class(JSContext *cx, JSHandleObject obj, JSHandleId j
     const char *clsname =JS_EncodeString(cx, jsname);
     Class cls = objc_getClass(clsname);
     if (cls) {
-        jsval val = create_objc_instance_class(cx, clsname);
-        JS_SetProperty(cx, obj, clsname, &val);
+        create_objc_instance_class(cx, clsname);
     }
     
     internalOperation--;
@@ -221,9 +225,12 @@ static JSBool js_objc_perform_selector(JSContext *cx, uint32_t argc, jsval *vp) 
         
         ok &= jsval_from_type(cx, [signature methodReturnType], retval, &rval);
         free(retval);
+        
+        JS_SET_RVAL(cx, vp, rval);
+    } else {
+        JS_SET_RVAL(cx, vp, JSVAL_VOID);
     }
     
-    JS_SET_RVAL(cx, vp, rval);
     
     return ok;
 }
