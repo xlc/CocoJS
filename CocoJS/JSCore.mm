@@ -98,6 +98,15 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     return [self evaluateString:script outVal:nil];
 }
 
+- (BOOL)isStringCompleted:(NSString *)string {
+    return JS_BufferIsCompilableUnit(_cx, JS_TRUE, _global, [string UTF8String], string.length);
+}
+
+- (NSString *)stringFromValue:(jsval)val {
+    JSString *jsstr = JS_ValueToSource(_cx, val);
+    return @(JS_EncodeString(_cx, jsstr));
+}
+
 #pragma mark -
 
 - (void)gc {

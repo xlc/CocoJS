@@ -11,7 +11,6 @@
 #import "JSCore.h"
 #import "HighlightingTextView.h"
 #import "JavascriptSyntaxHighlighter.h"
-#import "js_objc_helper.h"
 
 static JSConsole *sharedConsole;
 
@@ -251,14 +250,14 @@ static JSConsole *sharedConsole;
     if (firstline)
         [_text appendString:@"> "];
     else
-        [_text appendString:@">>  "];
+        [_text appendString:@">> "];
     _lastPosition = [_text length];
     _textView.text = _text;
 }
 
 - (void)appendValue:(jsval)value {
     if (!JSVAL_IS_VOID(value)) {
-        [self appendMessage:jsval_to_NSString([JSCore sharedInstance].cx, value)];
+        [self appendMessage:[[JSCore sharedInstance] stringFromValue:value]];
     }
 }
 
@@ -275,20 +274,15 @@ static JSConsole *sharedConsole;
     [_buffer appendString:string];
     [_buffer appendString:@"\n"];   // add new line
     jsval rval;
-    BOOL completed = YES;
-    BOOL ok = [[JSCore sharedInstance] evaluateString:_buffer outVal:&rval];
-    if (ok) {
-        [self appendValue:rval];
+    BOOL completed = [[JSCore sharedInstance] isStringCompleted:_buffer];
+    if (completed) {
+        BOOL ok = [[JSCore sharedInstance] evaluateString:_buffer outVal:&rval];
+        if (ok) {
+            [self appendValue:rval];
+        } else {
+            [self appendMessage:[[JSCore sharedInstance] errorString]];
+        }
         [_buffer setString:@""];    // clear buffer
-    } else {
-        NSString *errorStr = [[JSCore sharedInstance] errorString];
-        if ([errorStr rangeOfString:@"missing }"].location != NSNotFound) {
-            completed = NO;
-        }
-        if (completed) {
-            [self appendMessage:errorStr];
-            [_buffer setString:@""];    // clear buffer
-        }
     }
     
     [self appendPromptWithFirstLine:completed];

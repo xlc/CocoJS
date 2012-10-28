@@ -22,6 +22,9 @@
 - (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal;
 - (BOOL)evaluateFile:(NSString *)filepath;
 - (BOOL)evaluateScript:(NSString *)filename;
+- (BOOL)isStringCompleted:(NSString *)string;
+
+- (NSString *)stringFromValue:(jsval)val;
 
 - (void)gc;
 - (void)gcIfNeed;
