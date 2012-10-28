@@ -67,6 +67,15 @@ double jsval_to_number(jsval val) {
     return NAN;
 }
 
+int jsval_to_int_number(jsval val) {
+    if (JSVAL_IS_INT(val)) {
+        return JSVAL_TO_INT(val);
+    } else if (JSVAL_IS_DOUBLE(val)) {
+        return JSVAL_TO_DOUBLE(val);
+    }
+    return NAN;
+}
+
 id jsval_to_objc(JSContext *cx, jsval val) {
     JSType type = JS_TypeOfValue(cx, val);
     switch (type) {
@@ -388,36 +397,36 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
                 COPY_TO_BUFF2((char) JSVAL_TO_BOOLEAN(val));    // no break
             
         case _C_UCHR:  //     'C'
-            if (JSVAL_IS_INT(val))
-                COPY_TO_BUFF((char) JSVAL_TO_INT(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((char) jsval_to_int_number(val));
             
         case _C_SHT:  //      's'
         case _C_USHT:  //     'S'
-            if (JSVAL_IS_INT(val))
-                COPY_TO_BUFF((short) JSVAL_TO_INT(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((short) jsval_to_int_number(val));
             
         case _C_INT:  //      'i'
         case _C_UINT:  //     'I'
-            if (JSVAL_IS_INT(val))
-                COPY_TO_BUFF((int) JSVAL_TO_INT(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((int) jsval_to_int_number(val));
             
         case _C_LNG:  //      'l'
         case _C_ULNG:  //     'L'
-            if (JSVAL_IS_INT(val))
-                COPY_TO_BUFF((long) JSVAL_TO_INT(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((long) jsval_to_int_number(val));
             
         case _C_LNG_LNG:  //  'q'
         case _C_ULNG_LNG:  // 'Q'
-            if (JSVAL_IS_INT(val))
-                COPY_TO_BUFF((long long) JSVAL_TO_INT(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((long long) jsval_to_int_number(val));
             
         case _C_FLT:  //      'f'
-            if (JSVAL_IS_DOUBLE(val))
-                COPY_TO_BUFF((float) JSVAL_TO_DOUBLE(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((float) jsval_to_number(val));
             
         case _C_DBL:  //      'd'
-            if (JSVAL_IS_DOUBLE(val))
-                COPY_TO_BUFF((double) JSVAL_TO_DOUBLE(val));
+            if (JSVAL_IS_NUMBER(val))
+                COPY_TO_BUFF((double) jsval_to_number(val));
             
         case _C_UNDEF:  //    '?'
         case _C_VOID:  //     'v'

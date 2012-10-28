@@ -13,6 +13,7 @@ NSString *jsval_to_NSString(JSContext *cx, jsval val);
 const char *jsval_to_string(JSContext *cx, jsval val);
 
 double jsval_to_number(jsval val);
+int jsval_to_int_number(jsval val);
 
 id jsobject_to_objc(JSContext *cx, JSObject *obj);
 jsval jsval_from_objc( JSContext *cx, id object);

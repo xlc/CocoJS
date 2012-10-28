@@ -23,6 +23,7 @@
 @synthesize commentColor = _commentColor;
 @synthesize keywordColor = _keywordColor;
 @synthesize stringColor = _stringColor;
+@synthesize numberColor = _numberColor;
 @synthesize commandLineMode = _commandLineMode;
 
 - (id)init {
@@ -35,6 +36,8 @@
 	self.commentColor = [UIColor colorWithRed:0 green:.5f blue:0 alpha:1];
 	self.keywordColor = [UIColor blueColor];
 	self.stringColor = [UIColor colorWithRed:.64f green:.08f blue:.08f alpha:1];
+    self.numberColor = [UIColor colorWithRed:.08f green:.08f blue:0.64f alpha:1];
+    
 	return self;
 }
 
@@ -123,11 +126,13 @@
 	NSRange wordRange;
 	NSRange stringRange;
 	NSRange commentRange;
+    NSRange numebrRange;
 	BOOL isWord = NO;
 	BOOL isEscaped = NO;
 	BOOL isString = NO;
 	BOOL isComment = NO;
     BOOL ignoreLine = NO;
+    BOOL isNumber = NO;
     char quoteType = '\0';
 	for (NSUInteger i = 0; i < length; i++) {
 		// Ignore escaped characters
@@ -157,7 +162,7 @@
 		if (!isWord && !isComment && !isString && (isalpha(c) || c == '_')) {
 			isWord = YES;
 			wordRange.location = i;
-		}
+		} else
 		
 		// End of a word
 		if (isWord && !isalnum(c) && c != '_') {
@@ -169,7 +174,22 @@
 							   value:(id)_keywordColor.CGColor
 							   range:wordRange];
 			}
-		}
+		} else
+        
+            // start of number
+        if (!isNumber && !isWord && !isEscaped && !isComment && !isString && isnumber(c)) {
+            isNumber = YES;
+            numebrRange.location = i;
+        } else
+            
+            // end of number
+        if (isNumber && !(isnumber(c) || c == '.')) {
+            isNumber = NO;
+            numebrRange.length = i - numebrRange.location;
+			[string addAttribute:(id)kCTForegroundColorAttributeName
+                           value:(id)_numberColor.CGColor
+                           range:numebrRange];
+        } else
 		
 		// Start/end of a string
 		if (!isEscaped &&
@@ -186,17 +206,17 @@
 				stringRange.location = i;
 			}
 			isString = !isString;
-		}
+		} else
 		
 		if (!isEscaped && c == '\\')
 			isEscaped = YES;
-		
+		else
 		// Start of a comment
 		if (!isString && c == '/' && i < text.length - 1 && [text characterAtIndex:i+1] == '/') {
 			isComment = YES;
 			commentRange.location = i;
 		}
-		
+		else
 		// End of a comment
 		if ([text characterAtIndex:i] == '\n' || [text characterAtIndex:i] == '\r') {
 			if (isComment) {
@@ -229,7 +249,12 @@
 		[string addAttribute:(id)kCTForegroundColorAttributeName
 					   value:(id)_commentColor.CGColor
 					   range:commentRange];
-	}
+	} else if (isNumber) {
+        numebrRange.length = text.length - numebrRange.location;
+        [string addAttribute:(id)kCTForegroundColorAttributeName
+						   value:(id)_numberColor.CGColor
+						   range:numebrRange];
+    }
 	
 	return string;
 }

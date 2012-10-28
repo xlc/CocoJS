@@ -21,6 +21,7 @@
 @property (nonatomic, retain) UIColor* commentColor;
 @property (nonatomic, retain) UIColor* keywordColor;
 @property (nonatomic, retain) UIColor* stringColor;
+@property (nonatomic, retain) UIColor* numberColor;
 
 - (NSAttributedString*)highlight:(NSString*)text;
 
