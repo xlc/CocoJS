@@ -125,8 +125,8 @@ JSBool jsval_to_struct(JSContext *cx, jsval val, const char *encode, void **outv
     TO_STRUCT_END
     
     TO_STRUCT(NSRange)
-    GET_PROPERTY(JSVAL_TO_INT, location)
-    GET_PROPERTY(JSVAL_TO_INT, length)
+    GET_PROPERTY(jsval_to_int_number, location)
+    GET_PROPERTY(jsval_to_int_number, length)
     TO_STRUCT_END
     
     TO_STRUCT(UIEdgeInsets)

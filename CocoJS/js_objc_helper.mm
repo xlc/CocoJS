@@ -595,14 +595,17 @@ static JSBool invoke_method(id self, SEL _cmd, va_list ap, void *retvalue) {
     MASSERT_SOFT(JS_CallFunctionValue(cx, obj, method, argc, argv, &rval));
     delete [] argv;
     
-    void *outval;
-    uint32_t size;
-    if (jsval_to_type(cx, rval, [signature methodReturnType], &outval, &size)) {
-        memcmp(retvalue, outval, size);
-        return JS_TRUE;
+    if (retvalue && [signature methodReturnLength] != 0) {
+        void *outval;
+        uint32_t size;
+        if (jsval_to_type(cx, rval, [signature methodReturnType], &outval, &size)) {
+            memcmp(retvalue, outval, size);
+            return JS_TRUE;
+        }
+        return JS_FALSE;
     }
     
-    return JS_FALSE;
+    return JS_TRUE;
 }
 
 // template for method imp
