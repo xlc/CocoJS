@@ -12,6 +12,8 @@ NSString *jsval_to_NSString(JSContext *cx, jsval val);
 
 const char *jsval_to_string(JSContext *cx, jsval val);
 
+double jsval_to_number(jsval val);
+
 id jsobject_to_objc(JSContext *cx, JSObject *obj);
 jsval jsval_from_objc( JSContext *cx, id object);
 
@@ -23,7 +25,7 @@ SEL find_selector_class(Class cls, const char *selname, int argc, char **typedes
 
 JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val);
 
-JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, unsigned *outsize);
+JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, uint32_t *outsize);
 JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *outval);
 
 IMP get_imp(char *rettype);

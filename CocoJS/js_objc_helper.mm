@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #import "js_objc_binding.h"
+#import "js_objc_struct.h"
 #import "JSCore.h"
 
 static char associate_key;
@@ -57,6 +58,15 @@ const char *jsval_to_string(JSContext *cx, jsval val) {
     return JS_EncodeString(cx, JSVAL_TO_STRING(val));
 }
 
+double jsval_to_number(jsval val) {
+    if (JSVAL_IS_INT(val)) {
+        return JSVAL_TO_INT(val);
+    } else if (JSVAL_IS_DOUBLE(val)) {
+        return JSVAL_TO_DOUBLE(val);
+    }
+    return NAN;
+}
+
 id jsval_to_objc(JSContext *cx, jsval val) {
     JSType type = JS_TypeOfValue(cx, val);
     switch (type) {
@@ -73,10 +83,10 @@ id jsval_to_objc(JSContext *cx, jsval val) {
         {
             JSObject *obj = JSVAL_TO_OBJECT(val);
             if (JS_IsArrayObject(cx, obj)) {
-                unsigned length;
+                uint32_t length;
                 JS_GetArrayLength(cx, obj, &length);
                 NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
-                for (unsigned i = 0; i < length; i++) {
+                for (uint32_t i = 0; i < length; i++) {
                     jsval e;
                     MASSERT_SOFT(JS_GetElement(cx, obj, i, &e));
                     [array addObject:jsval_to_objc(cx, e)];
@@ -177,7 +187,7 @@ SEL find_selector(id obj, const char *selname, int argc) {
     }
     
     strncpy(cstr, selname, sizeof(buff));
-    unsigned len = strlen(cstr);
+    uint32_t len = strlen(cstr);
     MASSERT((len + argc + 1) < sizeof(buff), @"selector too long: %s", selname);
     
     if (argc >= 1) {    // must end with ':'
@@ -256,7 +266,7 @@ static SEL process_selector(Class cls, const char *selname, int argc) {
     }
     
     strncpy(cstr, selname, sizeof(buff));
-    unsigned len = strlen(cstr);
+    uint32_t len = strlen(cstr);
     MASSERT((len + argc + 1) < sizeof(buff), @"selector too long: %s", selname);
     
     int c = 0;
@@ -341,7 +351,10 @@ JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val)
     idx += 2;
     const char *type = [[invocation methodSignature] getArgumentTypeAtIndex:idx];
     void *outval;
-    MASSERT_SOFT(jsval_to_type(cx, val, type, &outval, NULL));
+    if (!jsval_to_type(cx, val, type, &outval, NULL)) {
+        MWLOG(@"fail to convert jsval to type: %s", type);
+        return JS_FALSE;
+    }
     
     [invocation setArgument:outval atIndex:idx];
     return JS_TRUE;
@@ -350,9 +363,9 @@ JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val)
 #define COPY_TO_BUFF(e) COPY_TO_BUFF2(e) break
 #define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); *outsize = sizeof(_ret); memcpy(buff, &_ret, *outsize); return JS_TRUE;}
 
-JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, unsigned *outsize) {
+JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, uint32_t *outsize) {
     *outval = buff;
-    unsigned size;
+    uint32_t size;
     if (!outsize) {
         outsize = &size;
     }
@@ -409,7 +422,7 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
         case _C_UNDEF:  //    '?'
         case _C_VOID:  //     'v'
         case _C_CONST:  //    'r'
-            return jsval_to_type(cx, val, encode, outval, outsize);
+            return jsval_to_type(cx, val, encode+1, outval, outsize);
             
             
         case _C_ARY_B:  //    '['
@@ -418,7 +431,7 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
         case _C_UNION_E:  //  ')'
         case _C_STRUCT_B:  // '{'
         case _C_STRUCT_E:  // '}'
-                           // TODO implement for structs
+            return jsval_to_struct(cx, val, encode, outval, outsize);
             
             // unsuportted type
         case _C_BFLD:  //     'b'
@@ -434,10 +447,12 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
     return JS_FALSE;
 }
 
-#define COPY_FROM_BUFF(T, e) {COPY_FROM_BUFF2(T) *outval = (e); return JS_TRUE;} break
-#define COPY_FROM_BUFF2(T) T val; memcpy(&val, value, sizeof(val));
+#define COPY_FROM_BUFF(T, e) {COPY_FROM_BUFF2(T); *outval = (e); return JS_TRUE;} break
+#define COPY_FROM_BUFF2(T) T val; memcpy(&val, value, sizeof(val))
 
 JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *outval) {
+    *outval = JSVAL_VOID;
+    
     switch (encode[0]) {
         case 0:
             *outval = JSVAL_VOID;
@@ -490,7 +505,7 @@ JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *ou
         case _C_UNDEF:  //    '?'
         case _C_VOID:  //     'v'
         case _C_CONST:  //    'r'
-            return jsval_from_type(cx, encode, value, outval);
+            return jsval_from_type(cx, encode+1, value, outval);
             
         case _C_ARY_B:  //    '['
         case _C_ARY_E:  //    ']'
@@ -498,7 +513,7 @@ JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *ou
         case _C_UNION_E:  //  ')'
         case _C_STRUCT_B:  // '{'
         case _C_STRUCT_E:  // '}'
-                           // TODO implement for structs
+            return jsval_from_struct(cx, encode, value, outval);
             
             // unsuportted type
         case _C_BFLD:  //     'b'
@@ -572,12 +587,13 @@ static JSBool invoke_method(id self, SEL _cmd, va_list ap, void *retvalue) {
     delete [] argv;
     
     void *outval;
-    unsigned size;
-    MASSERT_SOFT(jsval_to_type(cx, rval, [signature methodReturnType], &outval, &size));
+    uint32_t size;
+    if (jsval_to_type(cx, rval, [signature methodReturnType], &outval, &size)) {
+        memcmp(retvalue, outval, size);
+        return JS_TRUE;
+    }
     
-    memcmp(retvalue, outval, size);
-    
-    return JS_TRUE;
+    return JS_FALSE;
 }
 
 // template for method imp
@@ -616,19 +632,28 @@ void js_objc_method_imp<void>(id self, SEL _cmd, ...) {
     va_end(ap);
 }
 
-#define METHOD_IMP(type) template type js_objc_method_imp<type>(id self, SEL _cmd, ...);
-METHOD_IMP(Class)
-METHOD_IMP(id)
-METHOD_IMP(SEL)
-METHOD_IMP(int)
-METHOD_IMP(char *)
-METHOD_IMP(BOOL)
-METHOD_IMP(char)
-METHOD_IMP(short)
-METHOD_IMP(long)
-METHOD_IMP(long long)
-METHOD_IMP(float)
-METHOD_IMP(double)
+#define METHOD_IMP_DECL(type) template type js_objc_method_imp<type>(id self, SEL _cmd, ...);
+METHOD_IMP_DECL(Class)
+METHOD_IMP_DECL(id)
+METHOD_IMP_DECL(SEL)
+METHOD_IMP_DECL(int)
+METHOD_IMP_DECL(char *)
+METHOD_IMP_DECL(BOOL)
+METHOD_IMP_DECL(char)
+METHOD_IMP_DECL(short)
+METHOD_IMP_DECL(long)
+METHOD_IMP_DECL(long long)
+METHOD_IMP_DECL(float)
+METHOD_IMP_DECL(double)
+
+METHOD_IMP_DECL(CGPoint)
+METHOD_IMP_DECL(CGSize)
+METHOD_IMP_DECL(CGRect)
+METHOD_IMP_DECL(CGAffineTransform)
+METHOD_IMP_DECL(NSRange)
+METHOD_IMP_DECL(UIEdgeInsets);
+
+#define METHOD_IMP(type) if (strcmp(rettype, @encode(type)) == 0) return (IMP)js_objc_method_imp<type>
 
 IMP get_imp(char *rettype) {
     switch (rettype[0]) {
@@ -642,7 +667,12 @@ IMP get_imp(char *rettype) {
         case _C_UNION_E:  //  ')'
         case _C_STRUCT_B:  // '{'
         case _C_STRUCT_E:  // '}'
-                           // TODO implement for structs
+            METHOD_IMP(CGPoint);
+            METHOD_IMP(CGSize);
+            METHOD_IMP(CGRect);
+            METHOD_IMP(CGAffineTransform);
+            METHOD_IMP(NSRange);
+            METHOD_IMP(UIEdgeInsets);
             
             // unsuportted type
         case _C_BFLD:  //     'b'

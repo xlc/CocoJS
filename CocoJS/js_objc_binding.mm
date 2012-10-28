@@ -68,7 +68,7 @@ static JSBool js_objc_lookup_static_method(JSContext *cx, uint32_t argc, jsval *
     if (!JSVAL_IS_STRING(argvp[0])) return JS_FALSE;
     const char *selname = jsval_to_string(cx, argvp[0]);
     
-    unsigned len;
+    uint32_t len;
     JSObject *argv = JSVAL_TO_OBJECT(argvp[1]);
     MASSERT_SOFT(JS_GetArrayLength(cx, argv, &len));
     
@@ -280,9 +280,9 @@ static JSBool js_objc_create_class(JSContext *cx, uint32_t argc, jsval *vp) {
         } else if (!JSVAL_IS_PRIMITIVE(pval)) {
             JSObject *protocols = JSVAL_TO_OBJECT(argvp[2]);
             if (protocols) {
-                unsigned len;
+                uint32_t len;
                 MASSERT_SOFT(JS_GetArrayLength(cx, protocols, &len));
-                for (unsigned i = 0; i < len; i++) {
+                for (uint32_t i = 0; i < len; i++) {
                     jsval protocol;
                     JS_GetElement(cx, protocols, i, &protocol);
                     const char *pname = jsval_to_string(cx, protocol);
@@ -361,7 +361,7 @@ static JSBool js_objc_native_super(JSContext *cx, uint32_t argc, jsval *vp) {
     JSObject *selmapobj = JSVAL_TO_OBJECT(selmap);
     
     JSObject *argobj = JSVAL_TO_OBJECT(argvp[2]);
-    unsigned len;
+    uint32_t len;
     JS_GetArrayLength(cx, argobj, &len);
     
     SEL sel;

@@ -27,6 +27,7 @@
 		06D7FCB216350713000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D7FCC416353714000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
 		06D7FCC91635375B000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
+		06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DAE5ED163D10500009360D /* js_objc_struct.mm */; };
 		06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E06D1635426C006F2B9B /* JSCore.mm */; };
 		06E2E0711635427F006F2B9B /* libCocoJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCB116350713000E6576 /* libCocoJS.a */; };
 		06E2E0EB16354685006F2B9B /* MLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0E916354685006F2B9B /* MLogger.c */; };
@@ -139,6 +140,8 @@
 		06D7FCA6163506D8000E6576 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		06D7FCB116350713000E6576 /* libCocoJS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCocoJS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D7FCC31635370C000E6576 /* libjs_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjs_static.a; path = CocoJS/libs/libjs_static.a; sourceTree = "<group>"; };
+		06DAE5ED163D10500009360D /* js_objc_struct.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = js_objc_struct.mm; sourceTree = "<group>"; };
+		06DAE5EE163D10500009360D /* js_objc_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = js_objc_struct.h; sourceTree = "<group>"; };
 		06E2E06C1635426C006F2B9B /* JSCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCore.h; sourceTree = "<group>"; };
 		06E2E06D1635426C006F2B9B /* JSCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JSCore.mm; sourceTree = "<group>"; };
 		06E2E0E916354685006F2B9B /* MLogger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MLogger.c; sourceTree = "<group>"; };
@@ -386,6 +389,8 @@
 				06E2E0FD16355725006F2B9B /* js_objc_helper.mm */,
 				06498F2116364C43003F0C16 /* js_objc_binding.h */,
 				06498F2016364C43003F0C16 /* js_objc_binding.mm */,
+				06DAE5EE163D10500009360D /* js_objc_struct.h */,
+				06DAE5ED163D10500009360D /* js_objc_struct.mm */,
 			);
 			name = JSCore;
 			sourceTree = "<group>";
@@ -494,6 +499,7 @@
 				06E2E0F7163552FE006F2B9B /* JSConsole.mm in Sources */,
 				06E2E0FF16355725006F2B9B /* js_objc_helper.mm in Sources */,
 				06498F2216364C43003F0C16 /* js_objc_binding.mm in Sources */,
+				06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
