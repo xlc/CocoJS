@@ -27,6 +27,18 @@
 		06D7FCB216350713000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D7FCC416353714000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
 		06D7FCC91635375B000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
+		06D8CE0C163E7D380035D5A6 /* ThoMoClientStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */; };
+		06D8CE0D163E7D380035D5A6 /* ThoMoNetworkStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */; };
+		06D8CE0E163E7D380035D5A6 /* ThoMoServerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */; };
+		06D8CE0F163E7D380035D5A6 /* ThoMoTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */; };
+		06D8CE17163E81C00035D5A6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
+		06D8CE1A163E81C00035D5A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE19163E81C00035D5A6 /* main.m */; };
+		06D8CE22163E81E80035D5A6 /* ThoMoClientStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */; };
+		06D8CE23163E81EC0035D5A6 /* ThoMoServerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */; };
+		06D8CE24163E81ED0035D5A6 /* ThoMoNetworkStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */; };
+		06D8CE25163E81EF0035D5A6 /* ThoMoTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */; };
+		06D8CE28163E82870035D5A6 /* CocoJSTerminal.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE27163E82870035D5A6 /* CocoJSTerminal.m */; };
+		06D8CE2A163E893E0035D5A6 /* libreadline.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D8CE29163E893E0035D5A6 /* libreadline.dylib */; };
 		06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DAE5ED163D10500009360D /* js_objc_struct.mm */; };
 		06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E06D1635426C006F2B9B /* JSCore.mm */; };
 		06E2E0711635427F006F2B9B /* libCocoJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCB116350713000E6576 /* libCocoJS.a */; };
@@ -57,6 +69,15 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06D8CE13163E81BF0035D5A6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -140,6 +161,26 @@
 		06D7FCA6163506D8000E6576 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		06D7FCB116350713000E6576 /* libCocoJS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCocoJS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D7FCC31635370C000E6576 /* libjs_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjs_static.a; path = CocoJS/libs/libjs_static.a; sourceTree = "<group>"; };
+		06D8CDFD163E7D380035D5A6 /* ThoMoClientDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoClientDelegateProtocol.h; sourceTree = "<group>"; };
+		06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThoMoClientStub.m; sourceTree = "<group>"; };
+		06D8CDFF163E7D380035D5A6 /* ThoMoClientStub_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoClientStub_private.h; sourceTree = "<group>"; };
+		06D8CE00163E7D380035D5A6 /* ThoMoClientStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoClientStub.h; sourceTree = "<group>"; };
+		06D8CE01163E7D380035D5A6 /* ThoMoNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoNetworking.h; sourceTree = "<group>"; };
+		06D8CE02163E7D380035D5A6 /* ThoMoNetworkStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoNetworkStub.h; sourceTree = "<group>"; };
+		06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThoMoNetworkStub.m; sourceTree = "<group>"; };
+		06D8CE05163E7D380035D5A6 /* ThoMoServerDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoServerDelegateProtocol.h; sourceTree = "<group>"; };
+		06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThoMoServerStub.m; sourceTree = "<group>"; };
+		06D8CE07163E7D380035D5A6 /* ThoMoServerStub_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoServerStub_private.h; sourceTree = "<group>"; };
+		06D8CE08163E7D380035D5A6 /* ThoMoServerStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoServerStub.h; sourceTree = "<group>"; };
+		06D8CE09163E7D380035D5A6 /* ThoMoTCPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoTCPConnection.h; sourceTree = "<group>"; };
+		06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThoMoTCPConnection.m; sourceTree = "<group>"; };
+		06D8CE0B163E7D380035D5A6 /* ThoMoTCPConnectionDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThoMoTCPConnectionDelegateProtocol.h; sourceTree = "<group>"; };
+		06D8CE15163E81C00035D5A6 /* CocoJSTerminal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CocoJSTerminal; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D8CE19163E81C00035D5A6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		06D8CE1C163E81C00035D5A6 /* CocoJSTerminal-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CocoJSTerminal-Prefix.pch"; sourceTree = "<group>"; };
+		06D8CE26163E82870035D5A6 /* CocoJSTerminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoJSTerminal.h; sourceTree = "<group>"; };
+		06D8CE27163E82870035D5A6 /* CocoJSTerminal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoJSTerminal.m; sourceTree = "<group>"; };
+		06D8CE29163E893E0035D5A6 /* libreadline.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libreadline.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr/lib/libreadline.dylib; sourceTree = DEVELOPER_DIR; };
 		06DAE5ED163D10500009360D /* js_objc_struct.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = js_objc_struct.mm; sourceTree = "<group>"; };
 		06DAE5EE163D10500009360D /* js_objc_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = js_objc_struct.h; sourceTree = "<group>"; };
 		06E2E06C1635426C006F2B9B /* JSCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCore.h; sourceTree = "<group>"; };
@@ -182,6 +223,15 @@
 				06498F1816356B2D003F0C16 /* CoreGraphics.framework in Frameworks */,
 				06498F1A16356B38003F0C16 /* CoreText.framework in Frameworks */,
 				06498F1716356B28003F0C16 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06D8CE12163E81BF0035D5A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D8CE2A163E893E0035D5A6 /* libreadline.dylib in Frameworks */,
+				06D8CE17163E81C00035D5A6 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				06D7FC90163506D7000E6576 /* CocoJS */,
+				06D8CE18163E81C00035D5A6 /* CocoJSTerminal */,
 				06D7FC89163506D7000E6576 /* Frameworks */,
 				06D7FC87163506D7000E6576 /* Products */,
 			);
@@ -299,6 +350,7 @@
 			children = (
 				06D7FC86163506D7000E6576 /* app.app */,
 				06D7FCB116350713000E6576 /* libCocoJS.a */,
+				06D8CE15163E81C00035D5A6 /* CocoJSTerminal */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -306,6 +358,7 @@
 		06D7FC89163506D7000E6576 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06D8CE29163E893E0035D5A6 /* libreadline.dylib */,
 				06498F1916356B38003F0C16 /* CoreText.framework */,
 				06D7FCC31635370C000E6576 /* libjs_static.a */,
 				06D7FC8A163506D7000E6576 /* UIKit.framework */,
@@ -318,6 +371,7 @@
 		06D7FC90163506D7000E6576 /* CocoJS */ = {
 			isa = PBXGroup;
 			children = (
+				06D8CDFB163E7D380035D5A6 /* ThoMoNetworking */,
 				06499054163BD34F003F0C16 /* scripts */,
 				06D7FCC816353732000E6576 /* lib */,
 				06D7FC99163506D8000E6576 /* AppDelegate.h */,
@@ -354,6 +408,63 @@
 				06E2E0E916354685006F2B9B /* MLogger.c */,
 			);
 			name = lib;
+			sourceTree = "<group>";
+		};
+		06D8CDFB163E7D380035D5A6 /* ThoMoNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				06D8CDFC163E7D380035D5A6 /* ThoMoClient */,
+				06D8CE00163E7D380035D5A6 /* ThoMoClientStub.h */,
+				06D8CE01163E7D380035D5A6 /* ThoMoNetworking.h */,
+				06D8CE02163E7D380035D5A6 /* ThoMoNetworkStub.h */,
+				06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */,
+				06D8CE04163E7D380035D5A6 /* ThoMoServer */,
+				06D8CE08163E7D380035D5A6 /* ThoMoServerStub.h */,
+				06D8CE09163E7D380035D5A6 /* ThoMoTCPConnection.h */,
+				06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */,
+				06D8CE0B163E7D380035D5A6 /* ThoMoTCPConnectionDelegateProtocol.h */,
+			);
+			name = ThoMoNetworking;
+			path = libs/ThoMoNetworking;
+			sourceTree = "<group>";
+		};
+		06D8CDFC163E7D380035D5A6 /* ThoMoClient */ = {
+			isa = PBXGroup;
+			children = (
+				06D8CDFD163E7D380035D5A6 /* ThoMoClientDelegateProtocol.h */,
+				06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */,
+				06D8CDFF163E7D380035D5A6 /* ThoMoClientStub_private.h */,
+			);
+			path = ThoMoClient;
+			sourceTree = "<group>";
+		};
+		06D8CE04163E7D380035D5A6 /* ThoMoServer */ = {
+			isa = PBXGroup;
+			children = (
+				06D8CE05163E7D380035D5A6 /* ThoMoServerDelegateProtocol.h */,
+				06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */,
+				06D8CE07163E7D380035D5A6 /* ThoMoServerStub_private.h */,
+			);
+			path = ThoMoServer;
+			sourceTree = "<group>";
+		};
+		06D8CE18163E81C00035D5A6 /* CocoJSTerminal */ = {
+			isa = PBXGroup;
+			children = (
+				06D8CE19163E81C00035D5A6 /* main.m */,
+				06D8CE26163E82870035D5A6 /* CocoJSTerminal.h */,
+				06D8CE27163E82870035D5A6 /* CocoJSTerminal.m */,
+				06D8CE1B163E81C00035D5A6 /* Supporting Files */,
+			);
+			path = CocoJSTerminal;
+			sourceTree = "<group>";
+		};
+		06D8CE1B163E81C00035D5A6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				06D8CE1C163E81C00035D5A6 /* CocoJSTerminal-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		06E2E0F916355323006F2B9B /* Console */ = {
@@ -433,6 +544,23 @@
 			productReference = 06D7FCB116350713000E6576 /* libCocoJS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		06D8CE14163E81BF0035D5A6 /* CocoJSTerminal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06D8CE1F163E81C00035D5A6 /* Build configuration list for PBXNativeTarget "CocoJSTerminal" */;
+			buildPhases = (
+				06D8CE11163E81BF0035D5A6 /* Sources */,
+				06D8CE12163E81BF0035D5A6 /* Frameworks */,
+				06D8CE13163E81BF0035D5A6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CocoJSTerminal;
+			productName = CocoJSTerminal;
+			productReference = 06D8CE15163E81C00035D5A6 /* CocoJSTerminal */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -456,6 +584,7 @@
 			targets = (
 				06D7FC85163506D7000E6576 /* app */,
 				06D7FCB016350713000E6576 /* CocoJS */,
+				06D8CE14163E81BF0035D5A6 /* CocoJSTerminal */,
 			);
 		};
 /* End PBXProject section */
@@ -484,6 +613,10 @@
 				06D7FC97163506D8000E6576 /* main.m in Sources */,
 				06D7FC9B163506D8000E6576 /* AppDelegate.m in Sources */,
 				06D7FCA4163506D8000E6576 /* ViewController.mm in Sources */,
+				06D8CE0C163E7D380035D5A6 /* ThoMoClientStub.m in Sources */,
+				06D8CE0D163E7D380035D5A6 /* ThoMoNetworkStub.m in Sources */,
+				06D8CE0E163E7D380035D5A6 /* ThoMoServerStub.m in Sources */,
+				06D8CE0F163E7D380035D5A6 /* ThoMoTCPConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +633,19 @@
 				06E2E0FF16355725006F2B9B /* js_objc_helper.mm in Sources */,
 				06498F2216364C43003F0C16 /* js_objc_binding.mm in Sources */,
 				06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06D8CE11163E81BF0035D5A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06D8CE1A163E81C00035D5A6 /* main.m in Sources */,
+				06D8CE22163E81E80035D5A6 /* ThoMoClientStub.m in Sources */,
+				06D8CE24163E81ED0035D5A6 /* ThoMoNetworkStub.m in Sources */,
+				06D8CE23163E81EC0035D5A6 /* ThoMoServerStub.m in Sources */,
+				06D8CE25163E81EF0035D5A6 /* ThoMoTCPConnection.m in Sources */,
+				06D8CE28163E82870035D5A6 /* CocoJSTerminal.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -648,6 +794,35 @@
 			};
 			name = Release;
 		};
+		06D8CE20163E81C00035D5A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJSTerminal/CocoJSTerminal-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		06D8CE21163E81C00035D5A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CocoJSTerminal/CocoJSTerminal-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -677,6 +852,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		06D8CE1F163E81C00035D5A6 /* Build configuration list for PBXNativeTarget "CocoJSTerminal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06D8CE20163E81C00035D5A6 /* Debug */,
+				06D8CE21163E81C00035D5A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

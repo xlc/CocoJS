@@ -25,4 +25,7 @@
 
 - (void)appendMessage:(NSString *)msg;
 
+- (void)startServer;
+- (void)stopServer;
+
 @end

@@ -8,8 +8,6 @@
 
 #import "ViewController.h"
 
-#import "JSConsole.h"
-
 @interface ViewController ()
 
 @end
@@ -22,8 +20,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     self.view.backgroundColor = [UIColor blackColor];
-    
-    [[JSConsole sharedInstance] setVisible:YES];
 }
 
 - (void)didReceiveMemoryWarning

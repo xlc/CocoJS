@@ -10,6 +10,7 @@
 
 #import "ViewController.h"
 #import "JSCore.h"
+#import "JSConsole.h"
 
 @implementation AppDelegate
 
@@ -28,7 +29,11 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
-    [[JSCore sharedInstance] evaluateScript:@"main"];
+    [[JSCore sharedInstance] evaluateScriptFile:@"main"];
+    
+    JSConsole *console = [JSConsole sharedInstance];
+    [console startServer];
+    console.visible = YES;
     
     return YES;
 }

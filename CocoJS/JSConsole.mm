@@ -11,10 +11,11 @@
 #import "JSCore.h"
 #import "HighlightingTextView.h"
 #import "JavascriptSyntaxHighlighter.h"
+#import "ThoMoServerStub.h"
 
 static JSConsole *sharedConsole;
 
-@interface JSConsole () <UITextViewDelegate>
+@interface JSConsole () <UITextViewDelegate, ThoMoServerDelegateProtocol>
 
 @property (nonatomic, retain) HighlightingTextView *textView;
 @property (nonatomic, retain) UILabel *titleView;
@@ -41,6 +42,8 @@ static JSConsole *sharedConsole;
     CGRect _orignalFrame;
     UIView *_resizerView;
     UITapGestureRecognizer *_tapRecognizer;
+    
+    ThoMoServerStub *_server;
 }
 
 @synthesize textView = _textView;
@@ -133,6 +136,9 @@ static JSConsole *sharedConsole;
     
     [_text release];
     [_buffer release];
+    
+    [_server stop];
+    [_server release];
     
     [super dealloc];
 }
@@ -235,6 +241,9 @@ static JSConsole *sharedConsole;
     if ([_text characterAtIndex:[_text length]-1] != '\n')
         [_text appendString:@"\n"];
     [_text appendString:msg];
+    
+    [_server sendToAllClients:msg];
+    
     [self appendPromptWithFirstLine:YES];
 }
 
@@ -252,12 +261,15 @@ static JSConsole *sharedConsole;
         [_text appendString:@">> "];
     _lastPosition = [_text length];
     _textView.text = _text;
+    
+    [_server sendToAllClients:@(firstline)];
 }
 
 - (void)appendValue:(jsval)value {
     if (!JSVAL_IS_VOID(value)) {
         [self appendMessage:[[JSCore sharedInstance] stringFromValue:value]];
     }
+    [self appendPromptWithFirstLine:YES];
 }
 
 - (void)handleInputString:(NSString *)string {
@@ -282,9 +294,9 @@ static JSConsole *sharedConsole;
             [self appendMessage:[[JSCore sharedInstance] errorString]];
         }
         [_buffer setString:@""];    // clear buffer
+    } else {
+        [self appendPromptWithFirstLine:completed];
     }
-    
-    [self appendPromptWithFirstLine:completed];
 }
 
 #pragma mark - Keyboard Notification
@@ -347,6 +359,32 @@ static JSConsole *sharedConsole;
         NSString *scriptString = [_text substringFromIndex:_lastPosition];
         [self handleString:scriptString];
     }
+}
+
+#pragma mark -
+
+- (void)startServer {
+    if (!_server) {
+        _server = [[ThoMoServerStub alloc] initWithProtocolIdentifier:@"CocoJSDebug"];
+        _server.delegate = self;
+    }
+    [_server start];
+}
+
+- (void)stopServer {
+    [_server stop];
+    [_server release];
+    _server = nil;
+}
+
+#pragma mark - ThoMoServerDelegateProtocol
+
+- (void) server:(ThoMoServerStub *)theServer acceptedConnectionFromClient:(NSString *)aClientIdString {
+    MILOG(@"New Client: %@", aClientIdString);
+}
+
+- (void) server:(ThoMoServerStub *)theServer didReceiveData:(id)theData fromClient:(NSString *)aClientIdString {
+    [self handleInputString:theData];
 }
 
 @end

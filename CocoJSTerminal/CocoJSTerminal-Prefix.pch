@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'CocoJSTerminal' target in the 'CocoJSTerminal' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
