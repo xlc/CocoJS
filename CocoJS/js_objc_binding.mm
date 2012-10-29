@@ -482,7 +482,9 @@ void js_objc_init(JSContext *cx, JSObject *global) {
     "var newcls = objc._createClass(this.name, clsname, protocols);" "\n"
     "var prototype = newcls.prototype;" "\n"
     "for (var name in prop) {" "\n"
-    "   objc._addMethod(newcls.name, name, prototype, prop[name]);" "\n"
+    "   if (prop.hasOwnProperty(name)) {" "\n"
+    "       objc._addMethod(newcls.name, name, prototype, prop[name]);" "\n"
+    "   }" "\n"
     "}" "\n"
     "prototype.__proto__ = this.prototype;" "\n"
     "return newcls;";

@@ -780,6 +780,18 @@ JSBool invoke_objc_method(JSContext *cx, NSInvocation *invocation, jsval *rval) 
             if (!ok) {
                 MWLOG(@"fail to convert return value to jsval. encode: %s", [signature methodReturnType]);
             }
+            
+            SEL sel = [invocation selector];
+            const char *selname = sel_getName(sel);
+            if (strncmp(selname, "alloc", 5) == 0 ||
+                strncmp(selname, "copy", 4) == 0 ||
+                strncmp(selname, "new", 3) == 0) {
+                if (strcmp([signature methodReturnType], @encode(id)) == 0) {
+                    id obj = (id)*(id *)retval;
+                    [obj autorelease];  // to balance retain count
+                }
+            }
+            
             free(retval);
         } else {
             *rval = JSVAL_VOID;
