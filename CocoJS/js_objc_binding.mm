@@ -12,6 +12,8 @@
 
 #import "js_objc_helper.h"
 
+#import "JSConsole.h"
+
 static int internalOperation = 0;
 
 static JSFunction *createSelectorFunc;
@@ -89,17 +91,11 @@ static JSBool js_objc_lookup_static_method(JSContext *cx, uint32_t argc, jsval *
         ok &= set_argument(cx, invocation, i, arg);
     }
     if (!ok) return JS_FALSE;
-    [invocation invoke];
-    
     jsval rval;
-    void *retval = malloc([signature methodReturnLength]);
-    [invocation getReturnValue:retval];
-    
-    ok &= jsval_from_type(cx, [signature methodReturnType], retval, &rval);
-    free(retval);
+    ok = invoke_objc_method(cx, invocation, &rval);
     
     JS_SET_RVAL(cx, vp, rval);
-    return JS_TRUE;
+    return ok;
 }
 
 static jsval create_objc_instance_class(JSContext *cx, const char *clsname) {
@@ -215,23 +211,10 @@ static JSBool js_objc_perform_selector(JSContext *cx, uint32_t argc, jsval *vp) 
         ok &= set_argument(cx, invocation, i, argvp[i]);
     }
     if (!ok) return JS_FALSE;
-    [invocation invoke];
-    
     jsval rval;
-    int retlen = [signature methodReturnLength];
-    if (retlen != 0) {
-        void *retval = malloc([signature methodReturnLength]);
-        [invocation getReturnValue:retval];
-        
-        ok &= jsval_from_type(cx, [signature methodReturnType], retval, &rval);
-        free(retval);
-        
-        JS_SET_RVAL(cx, vp, rval);
-    } else {
-        JS_SET_RVAL(cx, vp, JSVAL_VOID);
-    }
+    ok = invoke_objc_method(cx, invocation, &rval);
     
-    
+    JS_SET_RVAL(cx, vp, rval);
     return ok;
 }
 
@@ -409,14 +392,9 @@ static JSBool js_objc_native_super(JSContext *cx, uint32_t argc, jsval *vp) {
         ok &= set_argument(cx, invocation, i, arg);
     }
     if (!ok) return JS_FALSE;
-    [invocation invoke];
-    
+
     jsval rval;
-    void *retval = malloc([signature methodReturnLength]);
-    [invocation getReturnValue:retval];
-    
-    ok &= jsval_from_type(cx, [signature methodReturnType], retval, &rval);
-    free(retval);
+    ok = invoke_objc_method(cx, invocation, &rval);
     
     method_setImplementation(selfmethod, selfimp);
     
@@ -439,13 +417,14 @@ static JSBool js_log(JSContext *cx, uint32_t argc, jsval *vp) {
     } else {
         NSMutableString *str = [NSMutableString string];
         for (int i = 0; i < argc; i++) {
-            NSString *value = jsval_to_NSString(cx, argvp[i]);
+            NSString *value = jsval_to_source(cx, argvp[i]);
             [str appendString:value];
             if (i != argc-1) {
-                [str appendString:@", "];
+                [str appendString:@" "];
             }
         }
         NSLog(@"%@", str);
+        [[JSConsole sharedInstance] appendMessage:str];
     }
     
     JS_SET_RVAL(cx, vp, JSVAL_VOID);

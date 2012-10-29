@@ -10,6 +10,7 @@
 
 #import "jsapi.h"
 #import "js_objc_binding.h"
+#import "js_objc_helper.h"
 
 static JSCore *sharedInstance;
 
@@ -103,8 +104,7 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 }
 
 - (NSString *)stringFromValue:(jsval)val {
-    JSString *jsstr = JS_ValueToSource(_cx, val);
-    return @(JS_EncodeString(_cx, jsstr));
+    return jsval_to_source(_cx, val);
 }
 
 #pragma mark -

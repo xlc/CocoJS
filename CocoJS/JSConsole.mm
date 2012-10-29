@@ -19,7 +19,6 @@ static JSConsole *sharedConsole;
 @property (nonatomic, retain) HighlightingTextView *textView;
 @property (nonatomic, retain) UILabel *titleView;
 
-- (void)appendMessage:(NSString *)msg;
 - (void)appendValue:(jsval)vale;
 
 - (void)appendPromptWithFirstLine:(BOOL)firstline;

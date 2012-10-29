@@ -54,6 +54,17 @@ NSString *jsval_to_NSString(JSContext *cx, jsval val) {
     }
 }
 
+NSString *jsval_to_source(JSContext *cx, jsval val) {
+    if (!JSVAL_IS_PRIMITIVE(val)) {
+        id obj = jsobject_to_objc(cx, JSVAL_TO_OBJECT(val));
+        if (obj) {
+            return [obj description];
+        }
+    }
+    JSString *jsstr = JS_ValueToSource(cx, val);
+    return @(JS_EncodeString(cx, jsstr));
+}
+
 const char *jsval_to_string(JSContext *cx, jsval val) {
     return JS_EncodeString(cx, JSVAL_TO_STRING(val));
 }
@@ -91,6 +102,9 @@ id jsval_to_objc(JSContext *cx, jsval val) {
         case JSTYPE_OBJECT:
         {
             JSObject *obj = JSVAL_TO_OBJECT(val);
+            if (!obj) {
+                return nil;
+            }
             if (JS_IsArrayObject(cx, obj)) {
                 uint32_t length;
                 JS_GetArrayLength(cx, obj, &length);
@@ -157,7 +171,12 @@ JSClass js_objc_holder_class = { "ObjCObjectHolder", JSCLASS_HAS_PRIVATE, JS_Pro
 
 id jsobject_to_objc(JSContext  *cx, JSObject *obj) {
     jsval val;
-    JS_GetProperty(cx, obj, "__holder__", &val);
+    if (!JS_GetProperty(cx, obj, "__holder__", &val)) {
+        return nil;
+    }
+    if (JSVAL_IS_PRIMITIVE(val)) {
+        return nil;
+    }
     JSObject *holder = JSVAL_TO_OBJECT(val);
     id nsobj = (id)JS_GetInstancePrivate(cx, holder, &js_objc_holder_class, NULL);
     return [[nsobj retain] autorelease];
@@ -739,4 +758,32 @@ IMP get_imp(char *rettype) {
         case _C_DBL:  //      'd'
             return (IMP)js_objc_method_imp<double>;
     }
+}
+
+JSBool invoke_objc_method(JSContext *cx, NSInvocation *invocation, jsval *rval) {
+    JSBool ok = JS_FALSE;
+    @try {
+        [invocation invoke];
+        ok = JS_TRUE;
+    }
+    @catch (id exception) {
+        jsval err = jsval_from_objc(cx, exception);
+        JS_SetPendingException(cx, err);
+    }
+    
+    if (ok) {
+        NSMethodSignature *signature = [invocation methodSignature];
+        if ([signature methodReturnLength] > 0) {
+            void *retval = malloc([signature methodReturnLength]);
+            [invocation getReturnValue:retval];
+            ok = jsval_from_type(cx, [signature methodReturnType], retval, rval);
+            if (!ok) {
+                MWLOG(@"fail to convert return value to jsval. encode: %s", [signature methodReturnType]);
+            }
+            free(retval);
+        } else {
+            *rval = JSVAL_VOID;
+        }
+    }
+    return ok;
 }

@@ -9,6 +9,7 @@
 #import "jsapi.h"
 
 NSString *jsval_to_NSString(JSContext *cx, jsval val);
+NSString *jsval_to_source(JSContext *cx, jsval val);
 
 const char *jsval_to_string(JSContext *cx, jsval val);
 
@@ -30,3 +31,5 @@ JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval
 JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *outval);
 
 IMP get_imp(char *rettype);
+
+JSBool invoke_objc_method(JSContext *cx, NSInvocation *invocation, jsval *rval);

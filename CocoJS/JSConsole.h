@@ -23,4 +23,6 @@
 
 - (void)handleInputString:(NSString *)string;
 
+- (void)appendMessage:(NSString *)msg;
+
 @end
