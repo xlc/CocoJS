@@ -11,7 +11,6 @@
 #import <objc/runtime.h>
 #include <algorithm>
 
-#import "js_objc_binding.h"
 #import "js_objc_struct.h"
 #import "JSCore.h"
 
@@ -134,9 +133,8 @@ jsval jsval_from_objc(JSContext *cx, id object) {
     if (!object) {
         return JSVAL_NULL;
     }
-    NSValue *jsobjptr = objc_getAssociatedObject(object, &associate_key);
-    if (jsobjptr) {
-        JSObject *jsobj = (JSObject *)[jsobjptr pointerValue];
+    JSObject *jsobj = jsobject_from_objc(object);
+    if (jsobj) {
         return OBJECT_TO_JSVAL(jsobj);
     }
     if ([object isKindOfClass:[NSString class]]) {
@@ -154,14 +152,29 @@ jsval jsval_from_objc(JSContext *cx, id object) {
         NSNumber *num = object;
         return DOUBLE_TO_JSVAL([num doubleValue]);  // TODO handle other types
     } else {    // TODO handle NSDictionary NSSet
-        const char *script = [[NSString stringWithFormat:@"new objc.%@", [object class]] UTF8String];
-        jsval val;
-        MASSERT_SOFT(JS_EvaluateScript(cx, JS_GetGlobalObject(cx), script, strlen(script), NULL, 0, &val));
-        associate_object(cx, JSVAL_TO_OBJECT(val), object);
-        return val;
+        jsval objcval;
+        JS_GetProperty(cx, JS_GetGlobalObject(cx), "objc", &objcval);
+        jsval clsval;
+        JS_GetProperty(cx, JSVAL_TO_OBJECT(objcval), class_getName([object class]), &clsval);
+        jsval protoval;
+        JS_GetProperty(cx, JSVAL_TO_OBJECT(clsval), "prototype", &protoval);
+        JSObject *jsobj = JS_NewObject(cx, NULL, JSVAL_TO_OBJECT(protoval), NULL);
+        
+        associate_object(cx, jsobj, object);
+        return OBJECT_TO_JSVAL(jsobj);
     }
 }
 
+JSObject *jsobject_from_objc(id object) {
+    if (!object) {
+        return NULL;
+    }
+    NSValue *jsobjptr = objc_getAssociatedObject(object, &associate_key);
+    if (jsobjptr) {
+        return (JSObject *)[jsobjptr pointerValue];
+    }
+    return NULL;
+}
 
 static void release_obj(JSFreeOp *op, JSObject *obj) {
     remove_associated_object(obj);
@@ -183,8 +196,6 @@ id jsobject_to_objc(JSContext  *cx, JSObject *obj) {
 }
 
 void associate_object(JSContext *cx, JSObject *jsobj, id nsobj) {
-    [nsobj retain];
-    
     JSObject *holder = JS_NewObject(cx, &js_objc_holder_class, NULL, NULL);
     jsval holderval = OBJECT_TO_JSVAL(holder);
     
@@ -193,6 +204,8 @@ void associate_object(JSContext *cx, JSObject *jsobj, id nsobj) {
     JS_SetPrivate(holder, nsobj);
     
     objc_setAssociatedObject(nsobj, &associate_key, [NSValue valueWithPointer:jsobj], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    [nsobj retain]; // have to be called last
 }
 
 void remove_associated_object(JSObject *jsobj) {
@@ -581,14 +594,14 @@ static JSBool invoke_method(id self, SEL _cmd, va_list ap, void *retvalue) {
             curr++;
         }
         JSBool found = JS_FALSE;
-        while (cstr[len-1] == '_') {
+        do {
             JS_HasProperty(cx, obj, cstr, &found);
             if (found) {
                 propertyname = cstr;
                 break;
             }
             cstr[--len] = '\0'; // remove last '_'
-        }
+        } while (cstr[len-1] == '_');
         if (!found) {
             MELOG(@"cannot find implementation of selector %s in object %@", sel_getName(_cmd), self);
             return JS_FALSE;

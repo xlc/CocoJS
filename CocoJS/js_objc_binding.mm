@@ -9,10 +9,12 @@
 #import "js_objc_binding.h"
 
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 #import "js_objc_helper.h"
 
 #import "JSConsole.h"
+#import "JSCore.h"
 
 static int internalOperation = 0;
 
@@ -128,7 +130,8 @@ static jsval create_objc_instance_class(JSContext *cx, const char *clsname) {
     JS_SetProperty(cx, proto, "toString", &descval);  // proto.toString = proto.description
     jsval callsuperval = OBJECT_TO_JSVAL(JS_GetFunctionObject(callSuperFunc));
     JS_SetProperty(cx, proto, "_super", &callsuperval);
-    associate_object(cx, proto, objc_getClass(clsname));
+    
+    associate_object(cx, obj, objc_getClass(clsname));
     
     JSObject *map = JS_NewObject(cx, NULL, NULL, NULL);
     jsval mapval = OBJECT_TO_JSVAL(map);
@@ -238,6 +241,50 @@ static JSBool js_objc_alloc(JSContext *cx, uint32_t argc, jsval *vp) {
     return JS_TRUE;
 }
 
+static char buff[32];
+
+id js_retain_imp(id self, SEL _cmd) {
+    if ([self retainCount] == 1) {
+        JSObject *jsobj = jsobject_from_objc(self);
+        if (jsobj) {    // 'retain' the jsobject, not sure how to use JS_AddObjectRoot/JS_RemoveObjectRoot with out crashing
+            JSContext *cx = [JSCore sharedInstance].cx;
+            jsval objcval;
+            JS_GetProperty(cx, JS_GetGlobalObject(cx), "objc", &objcval);
+            jsval holderval;
+            JS_GetProperty(cx, JSVAL_TO_OBJECT(objcval), "_objholder", &holderval);
+            
+            jsval jsobjval = OBJECT_TO_JSVAL(jsobj);
+            snprintf(buff, sizeof(buff), "%p", jsobj);
+            JS_SetProperty(cx, JSVAL_TO_OBJECT(holderval), buff, &jsobjval);
+        }
+    }
+    objc_super superstruct = {self, [NSObject class]};
+    return objc_msgSendSuper(&superstruct, _cmd);
+}
+
+//id js_autorelease_imp(id self, SEL _cmd) {
+//    objc_super superstruct = {self, [NSObject class]};
+//    return objc_msgSendSuper(&superstruct, _cmd);
+//}
+
+void js_release_imp(id self, SEL _cmd) {
+    if ([self retainCount] == 2) {  // js runtime is the only ownner of the object
+        JSObject *jsobj = jsobject_from_objc(self);
+        if (jsobj) {    // 'release' the jsobject. JS_RemoveObjectRoot always lead to crash during gc
+            JSContext *cx = [JSCore sharedInstance].cx;
+            jsval objcval;
+            JS_GetProperty(cx, JS_GetGlobalObject(cx), "objc", &objcval);
+            jsval holderval;
+            JS_GetProperty(cx, JSVAL_TO_OBJECT(objcval), "_objholder", &holderval);
+            
+            snprintf(buff, sizeof(buff), "%p", jsobj);
+            JS_DeleteProperty(cx, JSVAL_TO_OBJECT(holderval), buff);
+        }
+    }
+    objc_super superstruct = {self, [NSObject class]};
+    objc_msgSendSuper(&superstruct, _cmd);
+}
+
 static JSBool js_objc_create_class(JSContext *cx, uint32_t argc, jsval *vp) {
     jsval *argvp = JS_ARGV(cx, vp);
     
@@ -247,6 +294,10 @@ static JSBool js_objc_create_class(JSContext *cx, uint32_t argc, jsval *vp) {
     Class supercls = objc_getClass(superclsname);
     Class newcls = objc_allocateClassPair(supercls, newclsname, 0);
     objc_registerClassPair(newcls);
+    
+    class_addMethod(newcls, @selector(retain), (IMP)js_retain_imp, "@@:");
+//    class_addMethod(newcls, @selector(autorelease), (IMP)js_autorelease_imp, "@@:");
+    class_addMethod(newcls, @selector(release), (IMP)js_release_imp, "v@:");
     
     if (!newcls) {
         MWLOG(@"cannot create new class. super class: %s, new class: %s", superclsname, newclsname);
@@ -278,7 +329,10 @@ static JSBool js_objc_create_class(JSContext *cx, uint32_t argc, jsval *vp) {
         
     }
     
-    jsval rval = create_objc_instance_class(cx, newclsname);
+    jsval objcval;
+    JS_GetProperty(cx, JS_GetGlobalObject(cx), "objc", &objcval);
+    jsval rval;
+    JS_GetProperty(cx, JSVAL_TO_OBJECT(objcval), newclsname, &rval);
     
     JS_SET_RVAL(cx, vp, rval);
     return JS_TRUE;
@@ -431,6 +485,19 @@ static JSBool js_log(JSContext *cx, uint32_t argc, jsval *vp) {
     return JS_TRUE;
 }
 
+static JSBool js_eval_file(JSContext *cx, uint32_t argc, jsval *vp) {
+    if (argc != 1) {
+        return JS_FALSE;
+    }
+    
+    jsval *argvp = JS_ARGV(cx, vp);
+    
+    [[JSCore sharedInstance] evaluateScriptFile:jsval_to_NSString(cx, argvp[0])];
+    
+    JS_SET_RVAL(cx, vp, JSVAL_VOID);
+    return JS_TRUE;
+}
+
 void js_objc_init(JSContext *cx, JSObject *global) {
     JSObject *obj = JS_NewObject(cx, &js_objc_class, NULL, NULL);
     jsval objval = OBJECT_TO_JSVAL(obj);
@@ -439,6 +506,7 @@ void js_objc_init(JSContext *cx, JSObject *global) {
     internalOperation++;
     
     JS_DefineFunction(cx, global, "log", js_log, 1, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
+    JS_DefineFunction(cx, global, "evalFile", js_eval_file, 1, JSPROP_READONLY | JSPROP_PERMANENT | JSPROP_ENUMERATE );
     
     JS_DefineFunction(cx, obj, "_perform", js_objc_perform_selector, 2, JSPROP_READONLY | JSPROP_PERMANENT );
     JS_DefineFunction(cx, obj, "_alloc", js_objc_alloc, 1, JSPROP_READONLY | JSPROP_PERMANENT );
@@ -489,6 +557,10 @@ void js_objc_init(JSContext *cx, JSObject *global) {
     "prototype.__proto__ = this.prototype;" "\n"
     "return newcls;";
     extendFunc = JS_CompileFunction(cx, obj, "_extend", 3, extendargname, extendfuncbody, strlen(extendfuncbody), "_extend", 1);
+    
+    JSObject *objholder = JS_NewObject(cx, NULL, NULL, NULL);
+    jsval objholderval = OBJECT_TO_JSVAL(objholder);
+    JS_SetProperty(cx, obj, "_objholder", &objholderval);
     
     internalOperation--;
 }

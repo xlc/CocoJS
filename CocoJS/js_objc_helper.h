@@ -17,7 +17,10 @@ double jsval_to_number(jsval val);
 int jsval_to_int_number(jsval val);
 
 id jsobject_to_objc(JSContext *cx, JSObject *obj);
-jsval jsval_from_objc( JSContext *cx, id object);
+// create jsobject if not already associated
+jsval jsval_from_objc(JSContext *cx, id object);
+// get the associated jsobject
+JSObject *jsobject_from_objc(id object);
 
 void associate_object(JSContext *cx, JSObject *jsobj, id nsobj);
 void remove_associated_object(JSObject *jsobj);

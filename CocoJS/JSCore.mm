@@ -24,8 +24,9 @@ static JSClass global_class = { "Global", JSCLASS_GLOBAL_FLAGS, JS_PropertyStub,
 
 /* The error reporter callback. */
 static void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
-    sharedInstance.errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
-    MDLOG(@"%@", sharedInstance.errorString);
+    NSString *errorString = [NSString stringWithFormat:@"%s:%u:%s", report->filename ? report->filename : "<no filename="">", (unsigned int) report->lineno, message];
+    MDLOG(@"%@", errorString);
+    sharedInstance.errorString = errorString;
     
 }
 
@@ -35,10 +36,14 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 
 + (JSCore *)sharedInstance {
     static dispatch_once_t onceToken;
+    __block BOOL needinit = NO;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
-        js_objc_init(sharedInstance.cx, sharedInstance.global);
+        needinit = YES;
     });
+    if (needinit) {
+        [sharedInstance customInit];
+    }
     return sharedInstance;
 }
 
@@ -62,6 +67,13 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
         [self startAutoGC];
     }
     return self;
+}
+
+- (void)customInit {
+    js_objc_init(_cx, _global);
+    
+    [self evaluateScriptFile:@"init"];
+    [self gc];
 }
 
 - (void)dealloc

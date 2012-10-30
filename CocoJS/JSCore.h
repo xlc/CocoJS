@@ -19,6 +19,8 @@
 
 + (JSCore *)sharedInstance;
 
+- (void)customInit;
+
 - (BOOL)evaluateString:(NSString *)string outVal:(jsval *)outVal;
 - (BOOL)evaluateFile:(NSString *)filepath;
 - (BOOL)evaluateScriptFile:(NSString *)filename;
