@@ -15,7 +15,6 @@
 @interface CocoJSTerminal () <ThoMoClientDelegateProtocol>
 
 @property BOOL firstline;
-@property (retain) NSConditionLock *lock;
 
 - (void)prompt:(BOOL)firstline;
 - (void)threadMain;
@@ -24,6 +23,7 @@
 
 @implementation CocoJSTerminal {
     ThoMoClientStub *_client;
+    NSCondition *_condition;
 }
 
 + (void)run {
@@ -42,7 +42,8 @@
     if (self) {
         _client = [[ThoMoClientStub alloc] initWithProtocolIdentifier:@"CocoJSDebug"];
         _client.delegate = self;
-        _lock = [[NSConditionLock alloc] initWithCondition:0];
+        _condition = [[NSCondition alloc] init];
+        
     }
     return self;
 }
@@ -52,7 +53,7 @@
     [_client stop];
     [_client release];
     
-    [_lock release];
+    [_condition release];
     
     [super dealloc];
 }
@@ -66,19 +67,29 @@
 }
 
 - (void)prompt:(BOOL)firstline {
-    [self.lock lockWhenCondition:0];
+    [_condition lock];
+    [_condition broadcast];
     self.firstline = firstline;
-    [self.lock unlockWithCondition:1];
+    [_condition unlock];
 }
 
 - (void)threadMain {
     @autoreleasepool {
+        char *line = NULL;
+        
+        // disable tab completion
+        rl_bind_key ('\t', rl_insert);
+
         for (;;) {
-            [self.lock lockWhenCondition:1];
+            [_condition lock];
+            [_condition wait];
+            [_condition unlock];
             BOOL firstline = self.firstline;
-            const char *str = firstline ? "> " : ">> ";
-            char *line;
+            const char *str = firstline ? "\r> " : "\r>> ";
             do {
+                if (line) {
+                    free(line);
+                }
                 line = readline(str);
             } while (line && line[0] == '\0');
             if (line) {
@@ -91,7 +102,6 @@
             } else {
                 exit(EXIT_SUCCESS);
             }
-            [self.lock unlockWithCondition:0];
         }
     }
 }
@@ -109,7 +119,8 @@
 
 - (void)client:(ThoMoClientStub *)theClient didReceiveData:(id)theData fromServer:(NSString *)aServerIdString {
     if ([theData isKindOfClass:[NSString class]]) {
-        printf("%s\n", [theData UTF8String]);
+        printf("\r%s\n%s", [theData UTF8String], rl_prompt);
+        fflush(stdout);
     } else {
         [self prompt:[theData boolValue]];
     }
