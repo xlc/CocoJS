@@ -402,10 +402,10 @@ JSBool set_argument(JSContext *cx, NSInvocation *invocation, int idx, jsval val)
 }
 
 #define COPY_TO_BUFF(e) COPY_TO_BUFF2(e) break
-#define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); *outsize = sizeof(_ret); memcpy(buff, &_ret, *outsize); return JS_TRUE;}
+#define COPY_TO_BUFF2(e) {__typeof__(e) _ret = (e); *outsize = sizeof(_ret); memcpy(*outval, &_ret, *outsize); return JS_TRUE;}
 
 JSBool jsval_to_type(JSContext *cx, jsval val, const char *encode, void **outval, uint32_t *outsize) {
-    *outval = buff;
+    *outval = buff + 4 - (size_t)buff % 4;  // makr it alligned so to avoid EXC_ARM_DA_ALIGN
     uint32_t size;
     if (!outsize) {
         outsize = &size;
@@ -616,12 +616,13 @@ static JSBool invoke_method(id self, SEL _cmd, va_list ap, void *retvalue) {
     jsval rval;
     jsval *argv = new jsval[argc];
     
+    char *ptr = (char *)ap;
     for (int i = 0; i < argc; i++) {
         const char *type = [signature getArgumentTypeAtIndex:i];
-        MASSERT_SOFT(jsval_from_type(cx, type, ap, argv+i));
+        MASSERT_SOFT(jsval_from_type(cx, type, ptr, argv+i));
         NSUInteger size;
         NSGetSizeAndAlignment(type, &size, NULL);
-        ap += size;
+        ptr += size;
     }
     
     MASSERT_SOFT(JS_CallFunctionValue(cx, obj, method, argc, argv, &rval));
