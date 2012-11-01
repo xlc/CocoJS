@@ -15,6 +15,7 @@
 @property (nonatomic, retain, readonly) HighlightingTextView *textView;
 @property (nonatomic) BOOL visible;
 @property (nonatomic) BOOL fullScreen;
+@property (nonatomic) BOOL enableGesture;
 
 + (JSConsole *)sharedInstance;
 

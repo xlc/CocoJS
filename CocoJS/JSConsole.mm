@@ -117,11 +117,6 @@ static JSConsole *sharedConsole;
                                                  selector:@selector(keyboardWillHide:)
                                                      name:UIKeyboardWillHideNotification object:nil];
         
-        _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleVisible)];
-        _tapRecognizer.numberOfTapsRequired = 3;
-        _tapRecognizer.numberOfTouchesRequired = 2;
-        UIWindow *window = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
-        [window addGestureRecognizer:_tapRecognizer];
     }
     return self;
 }
@@ -165,6 +160,23 @@ static JSConsole *sharedConsole;
 
 - (void)toggleVisible {
     self.visible = !_visible;
+}
+
+- (void)setEnableGesture:(BOOL)enableGesture {
+    if (_enableGesture != enableGesture) {
+        _enableGesture = enableGesture;
+        if (_enableGesture) {
+            _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleVisible)];
+            _tapRecognizer.numberOfTapsRequired = 3;
+            _tapRecognizer.numberOfTouchesRequired = 2;
+            UIWindow *window = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
+            [window addGestureRecognizer:_tapRecognizer];
+        } else {
+            [_tapRecognizer.view removeGestureRecognizer:_tapRecognizer];
+            [_tapRecognizer release];
+            _tapRecognizer = nil;
+        }
+    }
 }
 
 - (void)setFullScreen:(BOOL)fullScreen {

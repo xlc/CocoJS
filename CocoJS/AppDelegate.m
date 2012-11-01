@@ -34,6 +34,7 @@
     JSConsole *console = [JSConsole sharedInstance];
     [console startServer];
     console.visible = YES;
+    console.enableGesture = YES;
     
     return YES;
 }
