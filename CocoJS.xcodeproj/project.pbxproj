@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061E9EC2164284CE00D10456 /* ThoMoNetworkStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */; };
+		061E9EC3164284D400D10456 /* ThoMoTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */; };
+		061E9EC4164284DB00D10456 /* ThoMoServerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */; };
+		061E9EC5164284E000D10456 /* ThoMoClientStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */; };
 		06498F1716356B28003F0C16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8A163506D7000E6576 /* UIKit.framework */; };
 		06498F1816356B2D003F0C16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8E163506D7000E6576 /* CoreGraphics.framework */; };
 		06498F1A16356B38003F0C16 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06498F1916356B38003F0C16 /* CoreText.framework */; };
@@ -27,10 +31,6 @@
 		06D7FCB216350713000E6576 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D7FCC416353714000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
 		06D7FCC91635375B000E6576 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCC31635370C000E6576 /* libjs_static.a */; };
-		06D8CE0C163E7D380035D5A6 /* ThoMoClientStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */; };
-		06D8CE0D163E7D380035D5A6 /* ThoMoNetworkStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE03163E7D380035D5A6 /* ThoMoNetworkStub.m */; };
-		06D8CE0E163E7D380035D5A6 /* ThoMoServerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE06163E7D380035D5A6 /* ThoMoServerStub.m */; };
-		06D8CE0F163E7D380035D5A6 /* ThoMoTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE0A163E7D380035D5A6 /* ThoMoTCPConnection.m */; };
 		06D8CE17163E81C00035D5A6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FC8C163506D7000E6576 /* Foundation.framework */; };
 		06D8CE1A163E81C00035D5A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CE19163E81C00035D5A6 /* main.m */; };
 		06D8CE22163E81E80035D5A6 /* ThoMoClientStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D8CDFE163E7D380035D5A6 /* ThoMoClientStub.m */; };
@@ -613,10 +613,6 @@
 				06D7FC97163506D8000E6576 /* main.m in Sources */,
 				06D7FC9B163506D8000E6576 /* AppDelegate.m in Sources */,
 				06D7FCA4163506D8000E6576 /* ViewController.mm in Sources */,
-				06D8CE0C163E7D380035D5A6 /* ThoMoClientStub.m in Sources */,
-				06D8CE0D163E7D380035D5A6 /* ThoMoNetworkStub.m in Sources */,
-				06D8CE0E163E7D380035D5A6 /* ThoMoServerStub.m in Sources */,
-				06D8CE0F163E7D380035D5A6 /* ThoMoTCPConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,6 +629,10 @@
 				06E2E0FF16355725006F2B9B /* js_objc_helper.mm in Sources */,
 				06498F2216364C43003F0C16 /* js_objc_binding.mm in Sources */,
 				06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */,
+				061E9EC2164284CE00D10456 /* ThoMoNetworkStub.m in Sources */,
+				061E9EC3164284D400D10456 /* ThoMoTCPConnection.m in Sources */,
+				061E9EC4164284DB00D10456 /* ThoMoServerStub.m in Sources */,
+				061E9EC5164284E000D10456 /* ThoMoClientStub.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -864,6 +864,7 @@
 				06D8CE21163E81C00035D5A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
