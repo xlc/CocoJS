@@ -19,11 +19,19 @@
 - (void)prompt:(BOOL)firstline;
 - (void)threadMain;
 
+- (void)handleInput:(NSString *)input;
+- (void)uploadDirectory:(NSString *)path;
+- (void)uploadFile:(NSString *)path;
+
 @end
 
 @implementation CocoJSTerminal {
     ThoMoClientStub *_client;
     NSCondition *_condition;
+    
+    NSRegularExpression *_pwdRegex;
+    NSRegularExpression *_cdRegex;
+    NSRegularExpression *_syncRegex;
 }
 
 + (void)run {
@@ -44,6 +52,15 @@
         _client.delegate = self;
         _condition = [[NSCondition alloc] init];
         
+        NSError *error = nil;
+        _pwdRegex = [[NSRegularExpression alloc] initWithPattern:@"^#pwd\\s*$" options:NSRegularExpressionCaseInsensitive error:&error];
+        _cdRegex = [[NSRegularExpression alloc] initWithPattern:@"^#cd\\s+(\\S+)\\s*$" options:NSRegularExpressionCaseInsensitive error:&error];
+        _syncRegex = [[NSRegularExpression alloc] initWithPattern:@"^#sync\\s*(\\S*)\\s*$" options:NSRegularExpressionCaseInsensitive error:&error];
+        
+        NSString *cwd = [[NSUserDefaults standardUserDefaults] objectForKey:@"WorkingDirectory"];
+        if (cwd) {
+            [[NSFileManager defaultManager] changeCurrentDirectoryPath:cwd];
+        }
     }
     return self;
 }
@@ -54,6 +71,10 @@
     [_client release];
     
     [_condition release];
+    
+    [_pwdRegex release];
+    [_cdRegex release];
+    [_syncRegex release];
     
     [super dealloc];
 }
@@ -76,9 +97,6 @@
 - (void)threadMain {
     @autoreleasepool {
         char *line = NULL;
-        
-        // disable tab completion
-        rl_bind_key ('\t', rl_insert);
 
         for (;;) {
             [_condition lock];
@@ -94,16 +112,84 @@
             } while (line && line[0] == '\0');
             if (line) {
                 add_history(line);
-                
-                NSString *script = @(line);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [_client sendToAllServers:script];
-                });
+                [self handleInput:@(line)];
             } else {
                 exit(EXIT_SUCCESS);
             }
         }
     }
+}
+
+- (void)handleInput:(NSString *)input {
+    if ([input characterAtIndex:0] == '#') {
+        BOOL found = YES;
+        NSRange strRange = NSMakeRange(0, input.length);
+        NSTextCheckingResult *result;
+        if ((result = [_pwdRegex firstMatchInString:input options:0 range:strRange])) {
+            printf("%s\n", [[[NSFileManager defaultManager] currentDirectoryPath] UTF8String]);
+        } else if ((result = [_cdRegex firstMatchInString:input options:0 range:strRange])) {
+            NSString *cwd = [[input substringWithRange:[result rangeAtIndex:1]] stringByExpandingTildeInPath];
+            NSURL *cwdurl = [NSURL URLWithString:cwd];
+            if ([[NSFileManager defaultManager] changeCurrentDirectoryPath:[cwdurl absoluteString]]) {
+                printf("%s\n", [[[NSFileManager defaultManager] currentDirectoryPath] UTF8String]);
+                [[NSUserDefaults standardUserDefaults] setObject:[cwdurl absoluteString] forKey:@"WorkingDirectory"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            } else {
+                printf("Invalid path: %s\n", [cwd UTF8String]);
+            }
+        } else if ((result = [_syncRegex firstMatchInString:input options:0 range:strRange])) {
+            NSRange range = [result rangeAtIndex:1];
+            NSString *path = (range.length == 0) ? @"." : [input substringWithRange:range];
+            [self uploadDirectory:path];
+        } else {
+            found = NO;
+        }
+        
+        if (found) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self prompt:self.firstline];
+            });
+            return;
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_client sendToAllServers:input];
+    });
+}
+
+- (void)uploadDirectory:(NSString *)path; {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    BOOL isDir;
+    if (![fileManager fileExistsAtPath:path isDirectory:&isDir]) {
+        printf("File not exists: %s\n", [path UTF8String]);
+        return;
+    }
+    
+    if (isDir) {
+        NSDirectoryEnumerator *dirEnum = [fileManager enumeratorAtPath:path];
+        
+        NSString *file;
+        while (file = [dirEnum nextObject]) {
+            if ([[file pathExtension] isEqualToString: @"js"]) {
+                [self uploadFile:file];
+            }
+        }
+    } else {
+        [self uploadFile:path];
+    }
+}
+
+- (void)uploadFile:(NSString *)path {
+    printf("Upload %s\n", [path UTF8String]);
+    
+    
+    NSDictionary *dict = @{
+    @"filename" : path,
+    @"content" : [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL]
+    };
+    
+    [_client sendToAllServers:dict];
 }
 
 #pragma mark - ThoMoClientDelegateProtocol

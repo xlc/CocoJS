@@ -16,6 +16,7 @@
 @property (nonatomic, readonly) JSContext *cx;
 @property (nonatomic, readonly) JSObject *global;
 @property (nonatomic, retain, readonly) NSString *errorString;
+@property (nonatomic) BOOL searchDocumentDirectory;
 
 + (JSCore *)sharedInstance;
 

@@ -383,8 +383,24 @@ static JSConsole *sharedConsole;
     MILOG(@"New Client: %@", aClientIdString);
 }
 
-- (void) server:(ThoMoServerStub *)theServer didReceiveData:(id)theData fromClient:(NSString *)aClientIdString {
-    [self handleInputString:theData];
+- (void) server:(ThoMoServerStub *)theServer didReceiveData:(id)theData fromClient:(NSString *)aClientIdString {    
+    if ([theData isKindOfClass:[NSString class]]) {
+        [self handleInputString:theData];
+    } else if ([theData isKindOfClass:[NSDictionary class]]) {
+        NSString *documentDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        
+        NSDictionary *dict = theData;
+        NSString *filename = dict[@"filename"];
+        NSString *content = dict[@"content"];
+        NSString *filepath = [documentDir stringByAppendingPathComponent:[@"scripts" stringByAppendingPathComponent:filename]];
+        
+        [[NSFileManager defaultManager] createDirectoryAtPath:[filepath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
+        
+        MASSERT([content writeToFile:filepath atomically:YES encoding:NSUTF8StringEncoding error:NULL], @"cannot write file to path: %@", filepath);
+        
+        [JSCore sharedInstance].searchDocumentDirectory = YES;
+    }
+
 }
 
 @end

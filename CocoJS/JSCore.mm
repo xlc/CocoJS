@@ -95,7 +95,22 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 }
 
 - (BOOL)evaluateScriptFile:(NSString *)filename {
-    NSString *filepath = [[NSBundle mainBundle] pathForResource:filename ofType:@"js" inDirectory:@"scripts"];
+    NSString *filepath;
+    BOOL found = NO;
+    if (_searchDocumentDirectory) {
+        NSString *documentDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        
+        filepath = [[documentDir stringByAppendingPathComponent:@"scripts"] stringByAppendingPathComponent:[filename stringByAppendingString:@".js"]];
+        BOOL isDir;
+        BOOL exist = [[NSFileManager defaultManager] fileExistsAtPath:filepath isDirectory:&isDir];
+        if (exist && !isDir) {
+            found = YES;
+        }
+    }
+    if (!found) {
+        filepath = [[NSBundle mainBundle] pathForResource:filename ofType:@"js" inDirectory:@"scripts"];
+    }
+    
     return [self evaluateFile:filepath];
 }
 
