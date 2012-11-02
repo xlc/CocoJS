@@ -321,7 +321,7 @@ static JSBool js_objc_create_class(JSContext *cx, uint32_t argc, jsval *vp) {
                     JS_GetElement(cx, protocols, i, &protocol);
                     const char *pname = jsval_to_string(cx, protocol);
                     Protocol *p = objc_getProtocol(pname);
-                    if (!class_addProtocol(newcls, p))
+                    if (!p || !class_addProtocol(newcls, p))
                         MILOG(@"fail to add protocol (%s) to class (%s)", pname, newclsname);
                 }
             }
