@@ -38,6 +38,8 @@
 - (id)valueForName:(NSString *)name;
 - (id)valueForName:(NSString *)name defaultValue:(id)defaultValue;
 
+- (id)executeFunction:(NSString *)name arguments:(id)arg, ... NS_REQUIRES_NIL_TERMINATION;
+
 @end
 
 static inline id JSGetValue(NSString *name, id defaultValue) {

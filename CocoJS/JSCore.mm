@@ -198,4 +198,45 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     return defaultValue;
 }
 
+- (id)executeFunction:(NSString *)name arguments:(id)arg, ... {
+    jsval outval;
+    if (![self evaluateString:name outVal:&outval]) {
+        MWLOG(@"cannot find function: %@", name);
+    }
+    if (JSVAL_IS_PRIMITIVE(outval) || !JS_ObjectIsFunction(_cx, JSVAL_TO_OBJECT(outval))) {
+        MWLOG(@"object is not function: %@", name);
+    }
+    
+    va_list ap;
+    va_start(ap, arg);
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    while (id obj = va_arg(ap, id)) {
+        [array addObject:obj];
+    }
+    
+    va_end(ap);
+    
+    jsval rval;
+    jsval *argv = new jsval[array.count];
+    int i = 0;
+    
+    for (id obj in array) {
+        argv[0] = jsval_from_objc(_cx, obj);
+        i++;
+    }
+    
+    JSBool ok = JS_CallFunctionValue(_cx, _global, outval, array.count, argv, &rval);
+    
+    delete [] argv;
+    
+    if (!ok) {
+        MILOG(@"fail to invoke js function %@ with arguments %@", name, array);
+        return nil;
+    }
+    
+    return jsval_to_objc(_cx, rval);
+}
+
 @end
