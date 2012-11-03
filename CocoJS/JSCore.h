@@ -35,4 +35,19 @@
 - (void)startAutoGC;
 - (void)stopAutoGC;
 
+- (id)valueForName:(NSString *)name;
+- (id)valueForName:(NSString *)name defaultValue:(id)defaultValue;
+
 @end
+
+static inline id JSGetValue(NSString *name, id defaultValue) {
+    return [[JSCore sharedInstance] valueForName:name defaultValue:defaultValue];
+}
+
+static inline float JSGetFloat(NSString *name, float defaultValue) {
+    return [[[JSCore sharedInstance] valueForName:name defaultValue:[NSNumber numberWithFloat:defaultValue]] floatValue];
+}
+
+static inline int JSGetInt(NSString *name, int defaultValue) {
+    return [[[JSCore sharedInstance] valueForName:name defaultValue:[NSNumber numberWithInt:defaultValue]] intValue];
+}

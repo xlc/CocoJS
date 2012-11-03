@@ -15,6 +15,7 @@ const char *jsval_to_string(JSContext *cx, jsval val);
 
 double jsval_to_number(jsval val);
 int jsval_to_int_number(jsval val);
+id jsval_to_objc(JSContext *cx, jsval val);
 
 id jsobject_to_objc(JSContext *cx, JSObject *obj);
 // create jsobject if not already associated

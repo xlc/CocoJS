@@ -160,4 +160,42 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     _autoGC = NO;
 }
 
+#pragma mark -
+
+- (id)valueForName:(NSString *)name {
+    return [self valueForName:name defaultValue:nil];
+}
+
+- (id)valueForName:(NSString *)name defaultValue:(id)defaultValue {
+    jsval outval;
+    if ([self evaluateString:name outVal:&outval]) {
+        id value = jsval_to_objc(_cx, outval);
+        if (value) {
+            return value;
+        }
+    }
+    // set default value
+    jsval val = jsval_from_objc(_cx, defaultValue);
+    JSObject *object = _global;
+    jsval objval;
+    NSArray *nameComponent = [name componentsSeparatedByString:@"."];
+    for (int i = 0; i < nameComponent.count - 1; i++) {
+        NSString *com = nameComponent[i];
+        JSBool ok = JS_GetProperty(_cx, object, [com UTF8String], &objval);
+        if (!ok || JSVAL_IS_VOID(objval)) {
+            objval = OBJECT_TO_JSVAL(JS_NewObject(_cx, NULL, NULL, NULL));
+            JS_SetProperty(_cx, object, [com UTF8String], &objval);
+        }
+        if (JSVAL_IS_PRIMITIVE(objval)) {
+            MILOG(@"unable to set value for %@", name);
+            return defaultValue;
+        }
+        object = JSVAL_TO_OBJECT(objval);
+    }
+    if (!JS_SetProperty(_cx, object, [[nameComponent lastObject] UTF8String], &val)) {
+        MILOG(@"unable to set value for %@", name);
+    }
+    return defaultValue;
+}
+
 @end

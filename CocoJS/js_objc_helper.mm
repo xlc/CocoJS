@@ -111,7 +111,11 @@ id jsval_to_objc(JSContext *cx, jsval val) {
                 for (uint32_t i = 0; i < length; i++) {
                     jsval e;
                     MASSERT_SOFT(JS_GetElement(cx, obj, i, &e));
-                    [array addObject:jsval_to_objc(cx, e)];
+                    id objcval = jsval_to_objc(cx, e);
+                    if (!objcval) {
+                        objcval = [NSNull null];
+                    }
+                    [array addObject:objcval];
                 }
                 return array;
             }
@@ -130,7 +134,7 @@ id jsval_to_objc(JSContext *cx, jsval val) {
 }
 
 jsval jsval_from_objc(JSContext *cx, id object) {
-    if (!object) {
+    if (!object || object == [NSNull null]) {
         return JSVAL_NULL;
     }
     JSObject *jsobj = jsobject_from_objc(object);
