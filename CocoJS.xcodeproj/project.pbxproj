@@ -42,7 +42,7 @@
 		06DAE5EF163D10500009360D /* js_objc_struct.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DAE5ED163D10500009360D /* js_objc_struct.mm */; };
 		06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E06D1635426C006F2B9B /* JSCore.mm */; };
 		06E2E0711635427F006F2B9B /* libCocoJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D7FCB116350713000E6576 /* libCocoJS.a */; };
-		06E2E0EB16354685006F2B9B /* MLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0E916354685006F2B9B /* MLogger.c */; };
+		06E2E0EB16354685006F2B9B /* MLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0E916354685006F2B9B /* MLogger.m */; };
 		06E2E0F4163552FE006F2B9B /* HighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0EC163552FE006F2B9B /* HighlightingTextView.m */; };
 		06E2E0F5163552FE006F2B9B /* AttributedTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0EE163552FE006F2B9B /* AttributedTextView.m */; };
 		06E2E0F6163552FE006F2B9B /* JavascriptSyntaxHighlighter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E2E0F1163552FE006F2B9B /* JavascriptSyntaxHighlighter.m */; };
@@ -185,7 +185,7 @@
 		06DAE5EE163D10500009360D /* js_objc_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = js_objc_struct.h; sourceTree = "<group>"; };
 		06E2E06C1635426C006F2B9B /* JSCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCore.h; sourceTree = "<group>"; };
 		06E2E06D1635426C006F2B9B /* JSCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JSCore.mm; sourceTree = "<group>"; };
-		06E2E0E916354685006F2B9B /* MLogger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MLogger.c; sourceTree = "<group>"; };
+		06E2E0E916354685006F2B9B /* MLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLogger.m; sourceTree = "<group>"; };
 		06E2E0EA16354685006F2B9B /* MLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLogger.h; sourceTree = "<group>"; };
 		06E2E0EC163552FE006F2B9B /* HighlightingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighlightingTextView.m; sourceTree = "<group>"; };
 		06E2E0ED163552FE006F2B9B /* AttributedTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedTextView.h; sourceTree = "<group>"; };
@@ -405,7 +405,7 @@
 				06E2E0FC163556FF006F2B9B /* JSCore */,
 				06E2E0F916355323006F2B9B /* Console */,
 				06E2E0EA16354685006F2B9B /* MLogger.h */,
-				06E2E0E916354685006F2B9B /* MLogger.c */,
+				06E2E0E916354685006F2B9B /* MLogger.m */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -621,7 +621,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				06E2E06E1635426C006F2B9B /* JSCore.mm in Sources */,
-				06E2E0EB16354685006F2B9B /* MLogger.c in Sources */,
+				06E2E0EB16354685006F2B9B /* MLogger.m in Sources */,
 				06E2E0F4163552FE006F2B9B /* HighlightingTextView.m in Sources */,
 				06E2E0F5163552FE006F2B9B /* AttributedTextView.m in Sources */,
 				06E2E0F6163552FE006F2B9B /* JavascriptSyntaxHighlighter.m in Sources */,
@@ -775,6 +775,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/CocoJS/libs\"",
 				);
+				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

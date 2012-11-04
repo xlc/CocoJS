@@ -7,6 +7,8 @@
  *
  */
 
+#import <Foundation/Foundation.h>
+
 #define MLOG_DEBUG 0
 #define MLOG_INFO 1
 #define MLOG_WARN 2
@@ -16,11 +18,22 @@ extern const char * const _MLogLevelName[];
 
 #ifdef DEBUG
 #define MLOG_LEVEL MLOG_DEBUG
-#else
-#define MLOG_LEVEL MLOG_ERROR
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    int _MIsInDebugger(void);
+    void MLog(NSString *format, ...);
+#ifdef __cplusplus
+}
 #endif
 
-#define MLOG(level, msg, ...) NSLog(@" %s\t %s:%d\t- %@", _MLogLevelName[level], __PRETTY_FUNCTION__, __LINE__, [NSString stringWithFormat:msg, ##__VA_ARGS__])
+#else
+#define MLOG_LEVEL MLOG_ERROR
+#define MLog NSLog
+#endif
+
+#define MLOG(level, msg, ...) MLog(@" %s\t %s:%d\t- %@", _MLogLevelName[level], __PRETTY_FUNCTION__, __LINE__, [NSString stringWithFormat:msg, ##__VA_ARGS__])
 
 #if MLOG_LEVEL <= MLOG_DEBUG
 #define MDLOG(msg, ...) MLOG(MLOG_DEBUG, msg, ##__VA_ARGS__)
@@ -47,38 +60,24 @@ extern const char * const _MLogLevelName[];
 #endif
 
 #ifdef DEBUG
-#ifdef __cplusplus
-extern "C" {
-#endif
-int _MIsInDebugger(void);
-#ifdef __cplusplus
-}
+#define _MBREAK if (_MIsInDebugger()) raise(SIGTRAP);
+#else
+#define _MBREAK
 #endif
 
 #define MASSERT(e, msg, ...) \
 do { \
 if (!(e)) { \
 MELOG(@"fail assertion: '%s', %@", #e, [NSString stringWithFormat:msg, ##__VA_ARGS__]); \
-if (_MIsInDebugger()) raise(SIGTRAP); \
+_MBREAK \
 } \
 } while (0)
 
 #define MFAIL(msg, ...) \
 do { \
 MELOG(msg, ##__VA_ARGS__); \
-if (_MIsInDebugger()) raise(SIGTRAP); \
+_MBREAK \
 } while (0)
-
-#else
-#define MASSERT(e, msg, ...) \
-do { \
-if (!(e)) { \
-MELOG(@"fail assertion: '%s', %@", #e, [NSString stringWithFormat:msg, ##__VA_ARGS__]); \
-} \
-} while (0)
-
-#define MFAIL(msg, ...) MELOG(msg, ##__VA_ARGS__)
-#endif  /* DEBUG */
 
 #define MASSERT_SOFT(e) do { \
 if (!(e)) { \

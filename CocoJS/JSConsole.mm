@@ -32,6 +32,8 @@ static JSConsole *sharedConsole;
 - (void)moveView:(UIPanGestureRecognizer *)recognizer;
 - (void)resizeView:(UIPanGestureRecognizer *)recognizer;
 
+- (void)clear;
+
 @end
 
 @implementation JSConsole {
@@ -85,6 +87,10 @@ static JSConsole *sharedConsole;
         [_titleView addGestureRecognizer:panRecognizer];
         [panRecognizer release];
         [self addSubview:_titleView];
+        
+        UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [clearButton setTitle:@"Clear" forState:UIControlStateNormal];
+        [clearButton addTarget:self action:@selector(clear) forControlEvents:UIControlEventTouchUpInside];
         
         _textView = [[HighlightingTextView alloc] initWithFrame:CGRectZero];
         _textView.editable = YES;
@@ -282,6 +288,16 @@ static JSConsole *sharedConsole;
         [self appendMessage:[[JSCore sharedInstance] stringFromValue:value]];
     }
     [self appendPromptWithFirstLine:YES];
+}
+
+- (void)clear {
+    NSRange range = [_text rangeOfString:@"\n" options:NSBackwardsSearch];
+    if (range.location == NSNotFound) {
+        return;
+    }
+    NSString *str = [_text substringFromIndex:range.location+1];
+    [_text setString:str];
+    _textView.text = _text;
 }
 
 - (void)handleInputString:(NSString *)string {

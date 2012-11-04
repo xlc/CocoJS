@@ -53,4 +53,16 @@ int _MIsInDebugger(void) {
     return result;
 }
 
+#import "JSConsole.h"
+
+void MLog(NSString *format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    NSLogv(format, ap);
+    
+    NSString *msg = [[NSString alloc] initWithFormat:format arguments:ap];
+    [[JSConsole sharedInstance] appendMessage:msg];
+    va_end(ap);
+}
+
 #endif
