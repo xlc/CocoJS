@@ -37,6 +37,8 @@
 
 - (id)valueForName:(NSString *)name;
 - (id)valueForName:(NSString *)name defaultValue:(id)defaultValue;
+- (void)valueForName:(NSString *)name encode:(const char *)encode outValue:(void *)outValue;
+- (void)valueForName:(NSString *)name encode:(const char *)encode defaultValue:(void *)defaultValue outValue:(void *)outValue;
 
 - (id)executeFunction:(NSString *)name arguments:(id)arg, ... NS_REQUIRES_NIL_TERMINATION;
 
@@ -53,3 +55,17 @@ static inline float JSGetFloat(NSString *name, float defaultValue) {
 static inline int JSGetInt(NSString *name, int defaultValue) {
     return [[[JSCore sharedInstance] valueForName:name defaultValue:[NSNumber numberWithInt:defaultValue]] intValue];
 }
+
+#define JSGETSTRUCT(type) \
+static inline type JSGet##type (NSString *name, type defaultValue) {\
+    type ret; \
+    [[JSCore sharedInstance] valueForName:name encode:@encode(type) defaultValue:&defaultValue outValue:&ret]; \
+    return ret; \
+}
+
+JSGETSTRUCT(CGPoint)
+JSGETSTRUCT(CGSize)
+JSGETSTRUCT(CGRect)
+JSGETSTRUCT(CGAffineTransform)
+JSGETSTRUCT(NSRange)
+JSGETSTRUCT(UIEdgeInsets)

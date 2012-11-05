@@ -18,6 +18,9 @@ static JSCore *sharedInstance;
 
 @property (nonatomic, retain) NSString *errorString;
 
+- (BOOL)jsvalForName:(NSString *)name outval:(jsval *)outval;
+- (BOOL)setJsvalForName:(NSString *)name val:(jsval)val;
+
 @end
 
 static JSClass global_class = { "Global", JSCLASS_GLOBAL_FLAGS, JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, NULL, JSCLASS_NO_OPTIONAL_MEMBERS };
@@ -162,20 +165,12 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 
 #pragma mark -
 
-- (id)valueForName:(NSString *)name {
-    return [self valueForName:name defaultValue:nil];
+- (BOOL)jsvalForName:(NSString *)name outval:(jsval *)outval {
+    return [self evaluateString:name outVal:outval];
 }
 
-- (id)valueForName:(NSString *)name defaultValue:(id)defaultValue {
-    jsval outval;
-    if ([self evaluateString:name outVal:&outval]) {
-        id value = jsval_to_objc(_cx, outval);
-        if (value) {
-            return value;
-        }
-    }
+- (BOOL)setJsvalForName:(NSString *)name val:(jsval)val {
     // set default value
-    jsval val = jsval_from_objc(_cx, defaultValue);
     JSObject *object = _global;
     jsval objval;
     NSArray *nameComponent = [name componentsSeparatedByString:@"."];
@@ -188,14 +183,50 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
         }
         if (JSVAL_IS_PRIMITIVE(objval)) {
             MILOG(@"unable to set value for %@", name);
-            return defaultValue;
+            return NO;
         }
         object = JSVAL_TO_OBJECT(objval);
     }
     if (!JS_SetProperty(_cx, object, [[nameComponent lastObject] UTF8String], &val)) {
         MILOG(@"unable to set value for %@", name);
+        return NO;
+    }
+    return YES;
+}
+
+- (id)valueForName:(NSString *)name {
+    return [self valueForName:name defaultValue:nil];
+}
+
+- (id)valueForName:(NSString *)name defaultValue:(id)defaultValue {
+    jsval outval;
+    if ([self jsvalForName:name outval:&outval]) {
+        return jsval_to_objc(_cx, outval);
+    } else {
+        [self setJsvalForName:name val:jsval_from_objc(_cx, defaultValue)];
     }
     return defaultValue;
+}
+
+- (void)valueForName:(NSString *)name encode:(const char *)encode outValue:(void *)outValue {
+    [self valueForName:name encode:encode defaultValue:NULL outValue:outValue];
+}
+
+- (void)valueForName:(NSString *)name encode:(const char *)encode defaultValue:(void *)defaultValue outValue:(void *)outValue {
+    jsval val;
+    NSUInteger size;
+    NSGetSizeAndAlignment(encode, &size, NULL);
+    if ([self jsvalForName:name outval:&val]) {
+        void *buffer;
+        uint32_t outsize;
+        jsval_to_type(_cx, val, encode, &buffer, &outsize);
+        MASSERT(size == outsize, @"unmatched outsize (%u) and actural size (%u)", outsize, size);
+        memcpy(outValue, buffer, size);
+    } else {
+        memcpy(outValue, defaultValue, size);
+        jsval_from_type(_cx, encode, defaultValue, &val);
+        [self setJsvalForName:name val:val];
+    }
 }
 
 - (id)executeFunction:(NSString *)name arguments:(id)arg, ... {
@@ -212,8 +243,10 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     
     NSMutableArray *array = [NSMutableArray array];
     
-    while (id obj = va_arg(ap, id)) {
+    id obj = arg;
+    while (obj) {
         [array addObject:obj];
+        obj = va_arg(ap, id);
     }
     
     va_end(ap);
