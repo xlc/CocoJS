@@ -166,7 +166,11 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 #pragma mark -
 
 - (BOOL)jsvalForName:(NSString *)name outval:(jsval *)outval {
-    return [self evaluateString:name outVal:outval];
+    BOOL ok = [self evaluateString:name outVal:outval];
+    if (!ok || JSVAL_IS_NULL(*outval) || JSVAL_IS_VOID(*outval)) {
+        return NO;
+    }
+    return YES;
 }
 
 - (BOOL)setJsvalForName:(NSString *)name val:(jsval)val {
@@ -219,14 +223,16 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     if ([self jsvalForName:name outval:&val]) {
         void *buffer;
         uint32_t outsize;
-        jsval_to_type(_cx, val, encode, &buffer, &outsize);
-        MASSERT(size == outsize, @"unmatched outsize (%u) and actural size (%u)", outsize, size);
-        memcpy(outValue, buffer, size);
-    } else {
-        memcpy(outValue, defaultValue, size);
-        jsval_from_type(_cx, encode, defaultValue, &val);
-        [self setJsvalForName:name val:val];
+        if (jsval_to_type(_cx, val, encode, &buffer, &outsize)) {
+            MASSERT(size == outsize, @"unmatched outsize (%u) and actural size (%u)", outsize, size);
+            memcpy(outValue, buffer, size);
+            return;
+        }
     }
+    // set default
+    memcpy(outValue, defaultValue, size);
+    jsval_from_type(_cx, encode, defaultValue, &val);
+    [self setJsvalForName:name val:val];
 }
 
 - (id)executeFunction:(NSString *)name arguments:(id)arg, ... {
