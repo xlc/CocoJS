@@ -236,14 +236,6 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 }
 
 - (id)executeFunction:(NSString *)name arguments:(id)arg, ... {
-    jsval outval;
-    if (![self evaluateString:name outVal:&outval]) {
-        MWLOG(@"cannot find function: %@", name);
-    }
-    if (JSVAL_IS_PRIMITIVE(outval) || !JS_ObjectIsFunction(_cx, JSVAL_TO_OBJECT(outval))) {
-        MWLOG(@"object is not function: %@", name);
-    }
-    
     va_list ap;
     va_start(ap, arg);
     
@@ -257,21 +249,35 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
     
     va_end(ap);
     
+    return [self executeFunction:name argumentArray:array];
+}
+
+- (id)executeFunction:(NSString *)name argumentArray:(NSArray *)args {
+    jsval outval;
+    if (![self evaluateString:name outVal:&outval]) {
+        MFAIL(@"cannot find function: %@", name);
+        return nil;
+    }
+    if (JSVAL_IS_PRIMITIVE(outval) || !JS_ObjectIsFunction(_cx, JSVAL_TO_OBJECT(outval))) {
+        MFAIL(@"object is not function: %@", name);
+        return nil;
+    }
+    
     jsval rval;
-    jsval *argv = new jsval[array.count];
+    jsval *argv = new jsval[args.count];
     int i = 0;
     
-    for (id obj in array) {
-        argv[0] = jsval_from_objc(_cx, obj);
+    for (id obj in args) {
+        argv[i] = jsval_from_objc(_cx, obj);
         i++;
     }
     
-    JSBool ok = JS_CallFunctionValue(_cx, _global, outval, array.count, argv, &rval);
+    JSBool ok = JS_CallFunctionValue(_cx, _global, outval, args.count, argv, &rval);
     
     delete [] argv;
     
     if (!ok) {
-        MILOG(@"fail to invoke js function %@ with arguments %@", name, array);
+        MELOG(@"fail to invoke js function %@ with arguments %@", name, args);
         return nil;
     }
     

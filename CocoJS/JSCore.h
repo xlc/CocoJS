@@ -41,8 +41,12 @@
 - (void)valueForName:(NSString *)name encode:(const char *)encode defaultValue:(void *)defaultValue outValue:(void *)outValue;
 
 - (id)executeFunction:(NSString *)name arguments:(id)arg, ... NS_REQUIRES_NIL_TERMINATION;
+- (id)executeFunction:(NSString *)name argumentArray:(NSArray *)args;
 
 @end
+
+
+#define JSExecuteFunction(function, ...) [[JSCore sharedInstance] executeFunction:function arguments:__VA_ARGS__]
 
 static inline id JSGetValue(NSString *name, id defaultValue) {
     return [[JSCore sharedInstance] valueForName:name defaultValue:defaultValue];
