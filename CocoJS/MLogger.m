@@ -50,8 +50,14 @@ int _MIsInDebugger(void) {
     
         // We're being debugged if the P_TRACED flag is set.
     result = (info.kp_proc.p_flag & P_TRACED) != 0;
+    
+    MDLOG(@"");
     return result;
 }
+
+#endif
+
+#ifdef MLOG_DIRECT_TO_JSCONSOLE
 
 #import "JSConsole.h"
 
@@ -61,7 +67,7 @@ void MLog(NSString *format, ...) {
     NSLogv(format, ap);
     
     NSString *msg = [[NSString alloc] initWithFormat:format arguments:ap];
-    [[JSConsole sharedInstance] appendMessage:msg];
+    [[JSConsole tryGetInstance] appendMessage:msg];
     va_end(ap);
 }
 

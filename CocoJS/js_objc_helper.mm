@@ -560,10 +560,13 @@ JSBool jsval_from_type(JSContext *cx, const char *encode, void *value, jsval *ou
         case _C_STRUCT_E:  // '}'
             return jsval_from_struct(cx, encode, value, outval);
             
+        case _C_PTR:  //      '^'
+            MDLOG(@"cast to integer for pointer type %s", encode);
+            COPY_FROM_BUFF(void *, INT_TO_JSVAL((int32_t)val));
+            
             // unsuportted type
         case _C_BFLD:  //     'b'
         case _C_VECTOR:  //   '!'
-        case _C_PTR:  //      '^'
         case _C_ATOM:  //     '%'
         default:
             MWLOG(@"unsouportted type %s", encode);

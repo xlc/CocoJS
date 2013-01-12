@@ -18,6 +18,7 @@
 @property (nonatomic) BOOL enableGesture;
 
 + (JSConsole *)sharedInstance;
++ (JSConsole *)tryGetInstance;
 
 - (void)toggleVisible;
 - (void)toggleFullScreen;

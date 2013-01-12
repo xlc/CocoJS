@@ -18,18 +18,19 @@ extern const char * const _MLogLevelName[];
 
 #ifdef DEBUG
 #define MLOG_LEVEL MLOG_DEBUG
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    int _MIsInDebugger(void);
-    void MLog(NSString *format, ...);
-#ifdef __cplusplus
-}
-#endif
-
+#define MLOG_DIRECT_TO_JSCONSOLE
+__BEGIN_DECLS
+int _MIsInDebugger(void);
+__END_DECLS
 #else
 #define MLOG_LEVEL MLOG_ERROR
+#endif
+
+#ifdef MLOG_DIRECT_TO_JSCONSOLE
+__BEGIN_DECLS
+void MLog(NSString *format, ...);
+__END_DECLS
+#else
 #define MLog NSLog
 #endif
 

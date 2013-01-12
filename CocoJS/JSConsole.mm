@@ -63,6 +63,10 @@ static JSConsole *sharedConsole;
     return sharedConsole;
 }
 
++ (JSConsole *)tryGetInstance {
+    return sharedConsole;
+}
+
 - (id)init
 {
     return [self initWithFrame:CGRectMake(0, 0, 600, 300)];
