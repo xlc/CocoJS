@@ -51,7 +51,6 @@ int _MIsInDebugger(void) {
         // We're being debugged if the P_TRACED flag is set.
     result = (info.kp_proc.p_flag & P_TRACED) != 0;
     
-    MDLOG(@"");
     return result;
 }
 
