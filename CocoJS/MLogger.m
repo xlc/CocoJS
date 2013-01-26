@@ -67,6 +67,7 @@ void MLog(NSString *format, ...) {
     
     NSString *msg = [[NSString alloc] initWithFormat:format arguments:ap];
     [[JSConsole tryGetInstance] appendMessage:msg];
+    [msg release];
     va_end(ap);
 }
 
