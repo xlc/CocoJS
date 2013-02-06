@@ -55,9 +55,26 @@ NSString *jsval_to_NSString(JSContext *cx, jsval val) {
 
 NSString *jsval_to_source(JSContext *cx, jsval val) {
     if (!JSVAL_IS_PRIMITIVE(val)) {
-        id obj = jsobject_to_objc(cx, JSVAL_TO_OBJECT(val));
+        JSObject *jsobj = JSVAL_TO_OBJECT(val);
+        id obj = jsobject_to_objc(cx, jsobj);
         if (obj) {
             return [obj description];
+        }
+        if (JS_IsArrayObject(cx, jsobj)) {
+            NSMutableString *str = [NSMutableString stringWithString:@"["];
+            uint32_t len;
+            JS_GetArrayLength(cx, jsobj, &len);
+            for (int i = 0; i < len; i++) {
+                jsval element;
+                JS_GetElement(cx, jsobj, i, &element);
+                [str appendString:jsval_to_source(cx, element)];
+                [str appendString:@", "];
+                if (!JSVAL_IS_PRIMITIVE(element)) {
+                    [str appendString:@"\n"];
+                }
+            }
+            [str replaceCharactersInRange:NSMakeRange([str length]-3, 2) withString:@"]"];
+            return str;
         }
     }
     JSString *jsstr = JS_ValueToSource(cx, val);
