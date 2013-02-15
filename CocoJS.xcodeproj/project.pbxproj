@@ -775,7 +775,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/CocoJS/libs\"",
 				);
-				OTHER_CFLAGS = "-DDEBUG";
+				OTHER_CFLAGS = (
+					"-DMLOG_DIRECT_TO_JSCONSOLE",
+					"-DDEBUG",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

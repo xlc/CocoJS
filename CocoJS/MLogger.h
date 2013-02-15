@@ -18,7 +18,7 @@ extern const char * const _MLogLevelName[];
 
 #ifdef DEBUG
 #define MLOG_LEVEL MLOG_DEBUG
-#define MLOG_DIRECT_TO_JSCONSOLE
+//#define MLOG_DIRECT_TO_JSCONSOLE
 __BEGIN_DECLS
 int _MIsInDebugger(void);
 __END_DECLS
